@@ -1,6 +1,11 @@
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
+
 namespace FitTheraPortal.Server.Controllers;
 
-public class InjuryController
+[ApiController]
+[Route("api/[controller]")]
+public class InjuryController : ControllerBase
 {
     
 }
