@@ -1,6 +1,6 @@
 namespace FitTheraPortal.Shared.Models;
 
-public class Patient
+public class Patient : Supabase.Postgrest.Models.BaseModel
 {
     public int ID { get; set; }
     public string FirstName { get; set; }
