@@ -1,10 +1,34 @@
 @page "/Patients"
+@using FitTheraPortal.Shared.Models
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @attribute [Authorize]
+@inject HttpClient Http
 
 <h3>Patients</h3>
 
 <div>This page will show the list of current patients.</div>
 
 @code {
-    
+    protected override async Task OnInitializedAsync()
+    {
+        var httpClient = new HttpClient
+        {
+            BaseAddress = new Uri("https://localhost:7025")
+        };
+
+        httpClient.DefaultRequestHeaders.Add("audience", "https://api.fitthera.com");
+
+        var response = await httpClient.GetAsync("/api/Patient/all");
+
+        if (response.IsSuccessStatusCode)
+        {
+            var content = await response.Content.ReadAsStringAsync();
+            Console.WriteLine(content);
+        }
+        else
+        {
+            Console.WriteLine($"Error: {response.StatusCode}");
+        }
+
+    }
 }

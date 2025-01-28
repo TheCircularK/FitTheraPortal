@@ -1,10 +1,12 @@
 using FitTheraPortal.Shared.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FitTheraPortal.Server.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class PatientController : ControllerBase
 {
     public PatientController(Supabase.Client client)
@@ -19,6 +21,6 @@ public class PatientController : ControllerBase
     {
         var response = await _client.From<Patient>().Get();
         
-        return Ok(response.Models);
+        return Ok(response.Models.ToList());
     }
 }
