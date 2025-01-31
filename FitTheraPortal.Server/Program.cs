@@ -52,13 +52,13 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
+app.MapControllers();
+
 app.UseCors("AllowAll");
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseHttpsRedirection();
-
-app.MapControllers();
 
 app.Run();

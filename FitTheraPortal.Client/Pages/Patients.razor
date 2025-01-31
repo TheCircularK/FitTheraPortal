@@ -1,8 +1,11 @@
 @page "/Patients"
+@using System.Diagnostics
+@using System.Net.Http.Headers
 @using FitTheraPortal.Shared.Models
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @attribute [Authorize]
 @inject HttpClient Http
+@inject IAccessTokenProvider TokenProvider
 
 <h3>Patients</h3>
 
@@ -11,24 +14,13 @@
 @code {
     protected override async Task OnInitializedAsync()
     {
-        var httpClient = new HttpClient
+        try
         {
-            BaseAddress = new Uri("https://localhost:7025")
-        };
-
-        httpClient.DefaultRequestHeaders.Add("audience", "https://api.fitthera.com");
-
-        var response = await httpClient.GetAsync("/api/Patient/all");
-
-        if (response.IsSuccessStatusCode)
-        {
-            var content = await response.Content.ReadAsStringAsync();
-            Console.WriteLine(content);
+            var response = await Http.GetAsync("api/Patient/all");
         }
-        else
+        catch (AccessTokenNotAvailableException ex)
         {
-            Console.WriteLine($"Error: {response.StatusCode}");
+            ex.Redirect();
         }
-
     }
 }
