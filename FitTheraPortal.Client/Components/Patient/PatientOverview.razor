@@ -1,0 +1,16 @@
+@using FitTheraPortal.Shared.Models
+
+<style>
+    .outlined {
+        border:  solid darkgray 1px;
+    }
+</style>
+
+<div class="outlined">@Patient.FirstName @Patient.LastName Status: Improving Details fix this add styling</div>
+
+@code {
+    [Parameter]
+    public Patient Patient { get; set; } = new();
+
+    
+}

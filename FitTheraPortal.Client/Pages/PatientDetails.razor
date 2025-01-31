@@ -1,0 +1,35 @@
+@page "/PatientDetails/{PatientId:int}"
+@using FitTheraPortal.Shared.Models
+
+<h3>Patient Details</h3>
+
+@if (hasError)
+{
+    <div style="color: red">Invalid route.</div>
+}
+else if (_patient == null)
+{
+    <div>Loading...</div>
+}
+else
+{
+    <div>This should contain the patient details.</div>
+    <div>Include the current injury and a collapsed section of previous injuries.</div>
+}
+
+@code {
+    [Parameter]
+    public int? PatientId { get; set; }
+    private bool hasError = false;
+    private Patient? _patient;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+    }
+
+    private void AreRouteParamsValid()
+    {
+        hasError = (PatientId == null);
+    }
+}

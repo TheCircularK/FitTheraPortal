@@ -3,6 +3,7 @@
 @using System.Net.Http.Headers
 @using FitTheraPortal.Shared.Models
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using FitTheraPortal.Client.Components.Patient
 @attribute [Authorize]
 @inject HttpClient Http
 @inject IAccessTokenProvider TokenProvider
@@ -11,12 +12,41 @@
 
 <div>This page will show the list of current patients.</div>
 
+@if (_isLoading || _patients == null)
+{
+    <div>Loading...</div>
+}
+else
+{
+    if (_patients.Count == 0)
+    {
+        <div>No patients have been assigned.</div>
+    }
+    else
+    {
+        foreach (var patient in _patients)
+        {
+            <PatientOverview Patient=@patient></PatientOverview>
+        }
+    }
+}
+
 @code {
+    private List<Patient>? _patients;
+    private bool _isLoading = true;
+    
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            var response = await Http.GetAsync("api/Patient/all");
+            var patients = await Http.GetFromJsonAsync<List<Patient>>("api/Patient/all");
+
+            if (patients != null)
+            {
+                _patients = patients;
+            }
+            
+            _isLoading = false;
         }
         catch (AccessTokenNotAvailableException ex)
         {
