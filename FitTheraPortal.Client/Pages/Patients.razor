@@ -7,6 +7,7 @@
 @attribute [Authorize]
 @inject HttpClient Http
 @inject IAccessTokenProvider TokenProvider
+@inject ISnackbar _snackbar
 
 <h3>Patients</h3>
 
@@ -48,9 +49,9 @@ else
             
             _isLoading = false;
         }
-        catch (AccessTokenNotAvailableException ex)
+        catch (Exception ex)
         {
-            ex.Redirect();
+            _snackbar.Add(ex.Message, Severity.Error);
         }
     }
 }

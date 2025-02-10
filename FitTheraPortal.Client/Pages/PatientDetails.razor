@@ -1,9 +1,11 @@
 @page "/PatientDetails/{PatientId:int}"
 @using FitTheraPortal.Shared.Models
 
+@inject ISnackbar Snackbar
+
 <h3>Patient Details</h3>
 
-@if (hasError)
+@if (_hasError)
 {
     <div style="color: red">Invalid route.</div>
 }
@@ -20,16 +22,43 @@ else
 @code {
     [Parameter]
     public int? PatientId { get; set; }
-    private bool hasError = false;
+    private bool _hasError = false;
     private Patient? _patient;
+    private List<Injury> _currentInjuries = new List<Injury>();
+    private List<Injury> _pastInjuries = new List<Injury>();
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
+
+        _hasError = AreRouteParamsValid();
+
+        if (!_hasError)
+        {
+            FetchPatientInfo();
+            // Get all injuries
+        }
+        
+        Snackbar.Add("Remember to figure out the whole health data thing!", Severity.Info);
     }
 
-    private void AreRouteParamsValid()
+    private bool AreRouteParamsValid()
     {
-        hasError = (PatientId == null);
+        return PatientId == null;
+    }
+
+    private void FetchPatientInfo()
+    {
+        _patient = new Patient();
+    }
+
+    private void FetchCurrentInjuries()
+    {
+        _currentInjuries = new List<Injury>();
+    }
+
+    private void FetchPastInjuries()
+    {
+        _pastInjuries = new List<Injury>();
     }
 }
