@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace FitTheraPortal.Shared.DTOs
+namespace FitTheraPortal.Shared.Dtos
 {
     public class TherapistDto
     {

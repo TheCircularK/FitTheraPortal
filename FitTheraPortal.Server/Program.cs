@@ -1,4 +1,6 @@
 using FitTheraPortal.Server.Automapper;
+using FitTheraPortal.Server.Repositories;
+using FitTheraPortal.Server.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Options;
@@ -11,6 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
+// Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
     {
@@ -22,6 +25,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+// Supabase
 var supabaseUrl = builder.Configuration["supabase:url"];
 var supabaseKey = builder.Configuration["supabase:key"];
 
@@ -35,6 +39,13 @@ var supabase = new Supabase.Client(supabaseUrl, supabaseKey, supabaseOptions);
 
 builder.Services.AddScoped<Supabase.Client>(provider => new Supabase.Client(supabaseUrl, supabaseKey, supabaseOptions));
 
+// Scoped services
+builder.Services.AddScoped<IProfileService, ProfileService>();
+
+// Scoped repositories
+builder.Services.AddScoped<IProfileRepository, ProfileRepository>();
+
+// CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
@@ -45,7 +56,7 @@ builder.Services.AddCors(options =>
     });
 });
 
-builder.Services.AddAutoMapper(typeof(Program).Assembly);
+builder.Services.AddAutoMapper(typeof(MapperProfile));
 
 var app = builder.Build();
 

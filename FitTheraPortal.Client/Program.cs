@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using FitTheraPortal.Client;
 using FitTheraPortal.Client.HttpHandler;
+using FitTheraPortal.Client.Services;
 using MudBlazor;
 using MudBlazor.Services;
 
@@ -11,11 +12,13 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
+// Mudblazor services
 builder.Services.AddMudServices(config =>
 {
     config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.TopCenter;
 });
 
+// API http handler
 builder.Services.AddHttpClient("ServerAPI",
     client =>
     {
@@ -27,6 +30,9 @@ builder.Services.AddScoped<AuthorizedMessageHandler>();
 
 builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>()
     .CreateClient("ServerAPI"));
+
+// Scoped data services
+builder.Services.AddScoped<IProfileDataService, ProfileDataService>();
 
 builder.Services.AddOidcAuthentication(options =>
 {

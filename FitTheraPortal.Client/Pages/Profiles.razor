@@ -1,0 +1,44 @@
+@page "/Profiles"
+@using FitTheraPortal.Client.Services
+<h3>Profiles</h3>
+
+@inject IProfileDataService ProfileService
+@inject ISnackbar Snackbar
+@inject HttpClient Http
+
+@if (_profiles == null)
+{
+    <div>Loading...</div>
+}
+else
+{
+    foreach (var profile in _profiles)
+    {
+        <div>
+            @profile.Username
+        </div>
+    }
+}
+
+@code {
+    private IEnumerable<ProfileDto> _profiles;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        try
+        {
+            var response = await Http.GetFromJsonAsync<IEnumerable<ProfileDto>>($"api/Profile");
+
+            if (response != null)
+            {
+                _profiles = response;
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add(ex.Message, Severity.Error);
+        }
+    }
+}

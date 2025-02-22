@@ -1,10 +1,12 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace FitTheraPortal.Shared.DTOs
+namespace FitTheraPortal.Shared.Dtos
 {
     public class ProfileDto
     {
+        public ProfileDto(){}
+        
         public Guid Id { get; set; }
 
         [Display(Name = "Updated At")]
