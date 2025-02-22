@@ -7,7 +7,7 @@ namespace FitTheraPortal.Shared.Models;
 public class ExerciseHealthData : BaseModel
 {
     [PrimaryKey("Id")]
-    public long Id { get; set; }
+    public Guid Id { get; set; }
 
     [Column("created_at")]
     public DateTime CreatedAt { get; set; }

@@ -24,7 +24,7 @@ public class ProfileService : IProfileService
 
         return response;
     }
-
+    
     public async Task<ProfileDto?> GetAsync(Guid id)
     {
         var profile = await _repo.GetByIdAsync(id);

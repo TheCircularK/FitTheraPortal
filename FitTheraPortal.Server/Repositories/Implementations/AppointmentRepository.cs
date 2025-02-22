@@ -2,7 +2,7 @@ using FitTheraPortal.Shared.Models;
 
 namespace FitTheraPortal.Server.Repositories;
 
-public class AppointmentRepository
+public class AppointmentRepository : IAppointmentRepository
 {
     private readonly Supabase.Client _client;
     
