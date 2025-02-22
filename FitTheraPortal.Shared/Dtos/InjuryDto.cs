@@ -1,28 +1,27 @@
-using System.ComponentModel;
+using System;
+using System.ComponentModel.DataAnnotations;
 
-namespace FitTheraPortal.Shared.Dtos;
-
-public class InjuryDto
+namespace FitTheraPortal.Shared.DTOs
 {
-    public InjuryDto(){ }
-    
-    public int Id { get; set; }
-    
-    [DisplayName("Injury Name")]
-    public string InjuryName { get; set; }
+    public class InjuryDto
+    {
+        public Guid Id { get; set; }
 
-    [DisplayName("Patient ID")]
-    public int PatientId { get; set; }
+        [Display(Name = "Created At")]
+        [DataType(DataType.DateTime)]
+        public DateTime CreatedAt { get; set; }
 
-    [DisplayName("Therapist ID")]
-    public int TherapistId { get; set; }
+        [Display(Name = "Title")]
+        public string Title { get; set; }
 
-    [DisplayName("Injury Description")]
-    public string? InjuryDescription { get; set; }
+        [Display(Name = "Description")]
+        public string Description { get; set; }
 
-    [DisplayName("Date Injured")]
-    public DateTime? DateInjured { get; set; }
+        [Display(Name = "Injury Date")]
+        [DataType(DataType.Date)]
+        public DateTime InjuryDate { get; set; }
 
-    [DisplayName("Date OK")]
-    public DateTime? DateOk { get; set; }
+        [Display(Name = "Patient ID")]
+        public Guid PatientId { get; set; }
+    }
 }
