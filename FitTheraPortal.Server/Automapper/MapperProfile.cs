@@ -8,7 +8,13 @@ public class MapperProfile : Profile
 {
     public MapperProfile()
     {
+        CreateMap<Company, CompanyDto>();
+        CreateMap<Injury, InjuryDto>()
+            .ForMember(dest => dest.DateInjured, opt => opt.MapFrom(src => src.DateInjured.HasValue ? src.DateInjured : null))
+            .ForMember(dest => dest.DateOk, opt => opt.MapFrom(src => src.DateOk.HasValue ? src.DateOk : null));
+        CreateMap<InjuryDto, Injury>();
         CreateMap<Patient, PatientDto>();
-        CreateMap<PatientDto, Patient>();
+        CreateMap<PhysicalTherapist, PhysicalTherapistDto>();
+        CreateMap<Treatment, TreatmentDto>();
     }
 }

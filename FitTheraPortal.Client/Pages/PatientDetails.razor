@@ -1,6 +1,9 @@
 @page "/PatientDetails/{PatientId:int}"
+@using System.Net
 @using FitTheraPortal.Shared.Models
+@using FitTheraPortal.Client.Components.Injury
 
+@inject HttpClient Http
 @inject ISnackbar Snackbar
 
 <h3>Patient Details</h3>
@@ -15,17 +18,27 @@ else if (_patient == null)
 }
 else
 {
-    <div>This should contain the patient details.</div>
-    <div>Include the current injury and a collapsed section of previous injuries.</div>
+    <h5>Current Injuries</h5>
+    @foreach (var injury in _currentInjuries)
+    {
+        <InjuryOverview Injury="injury"></InjuryOverview>
+    }
+    
+    <h5>Past Injuries</h5>
+    @foreach (var injury in _pastInjuries)
+    {
+        <InjuryOverview Injury="injury"></InjuryOverview>
+    }
 }
 
 @code {
     [Parameter]
     public int? PatientId { get; set; }
     private bool _hasError = false;
+    private bool _isLoading = true;
     private Patient? _patient;
-    private List<Injury> _currentInjuries = new List<Injury>();
-    private List<Injury> _pastInjuries = new List<Injury>();
+    private List<InjuryDto> _currentInjuries = new List<InjuryDto>();
+    private List<InjuryDto> _pastInjuries = new List<InjuryDto>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -36,7 +49,8 @@ else
         if (!_hasError)
         {
             FetchPatientInfo();
-            // Get all injuries
+            await FetchCurrentInjuries();
+            await FetchPastInjuries();
         }
         
         Snackbar.Add("Remember to figure out the whole health data thing!", Severity.Info);
@@ -52,13 +66,50 @@ else
         _patient = new Patient();
     }
 
-    private void FetchCurrentInjuries()
+    private async Task FetchCurrentInjuries()
     {
-        _currentInjuries = new List<Injury>();
+        try
+        {
+            var response = await Http.GetFromJsonAsync<List<InjuryDto>>($"api/injury/{PatientId}/injuries/current");
+
+            if (response != null)
+            {
+                _currentInjuries = response;
+                _isLoading = false;
+            }
+            else
+            {
+                _hasError = true;
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add(ex.Message, Severity.Error);
+            _hasError = true;
+        }
+        
     }
 
-    private void FetchPastInjuries()
+    private async Task FetchPastInjuries()
     {
-        _pastInjuries = new List<Injury>();
+        try
+        {
+            var response = await Http.GetFromJsonAsync<List<InjuryDto>>($"api/injury/{PatientId}/injuries/past");
+
+            if (response != null)
+            {
+                _currentInjuries = response;
+                _isLoading = false;
+            }
+            else
+            {
+                _hasError = true;
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add(ex.Message, Severity.Error);
+            _hasError = true;
+        }
     }
 }

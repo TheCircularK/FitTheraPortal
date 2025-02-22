@@ -1,5 +1,42 @@
-<h3>InjuryOverview</h3>
+@using System.ComponentModel
+
+<h3>@Injury.InjuryName</h3>
+
+@if (Injury != null)
+{
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>@GetDisplayName(nameof(InjuryDto.InjuryName))</th>
+            <th>@GetDisplayName(nameof(InjuryDto.PatientId))</th>
+            <th>@GetDisplayName(nameof(InjuryDto.TherapistId))</th>
+            <th>@GetDisplayName(nameof(InjuryDto.InjuryDescription))</th>
+            <th>@GetDisplayName(nameof(InjuryDto.DateInjured))</th>
+            <th>@GetDisplayName(nameof(InjuryDto.DateOk))</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>@Injury.InjuryName</td>
+            <td>@Injury.PatientId</td>
+            <td>@Injury.TherapistId</td>
+            <td>@Injury.InjuryDescription</td>
+            <td>@Injury.DateInjured?.ToString("yyyy-MM-dd") ?? "No Data Recorded"</td>
+            <td>@(Injury.DateOk != DateTime.MinValue ? Injury.DateOk?.ToString("yyyy-MM-dd") : "N/A")</td>
+        </tr>
+        </tbody>
+    </table>
+}
 
 @code {
+    [Parameter]
+    public InjuryDto Injury { get; set; }
     
+    private string GetDisplayName(string propertyName)
+    {
+        var property = typeof(InjuryDto).GetProperty(propertyName);
+        var displayNameAttribute = property?.GetCustomAttributes(typeof(DisplayNameAttribute), false).FirstOrDefault() as DisplayNameAttribute;
+
+        return displayNameAttribute?.DisplayName ?? propertyName;
+    }
 }

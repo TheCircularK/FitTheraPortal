@@ -1,22 +1,38 @@
 using Supabase.Postgrest.Attributes;
+using Supabase.Postgrest.Models;
 
 namespace FitTheraPortal.Shared.Models;
 
-[Table("Patient")]
-public class Patient : Supabase.Postgrest.Models.BaseModel
+[Table("patient")]
+public class Patient : BaseModel
 {
-    [PrimaryKey("Id", false)]
-    public int Id { get; set; }
-    
-    [Column("first_name")]
-    public string FirstName { get; set; }
-    
-    [Column("last_name")]
-    public string LastName { get; set; }
-    
-    [Column("email")]
-    public string? Email { get; set; }
-    
-    [Column("phone_number")]
-    public string? PhoneNumber { get; set; }
+    [PrimaryKey("Id")]
+    public Guid Id { get; set; }
+
+    [Column("user_id")]
+    public Guid UserId { get; set; }
+
+    [Column("created_at")]
+    public DateTime CreatedAt { get; set; }
+
+    [Column("current_conditions")]
+    public string CurrentConditions { get; set; }
+
+    [Column("activity_level")]
+    public string ActivityLevel { get; set; }
+
+    [Column("insurance_provider")]
+    public string InsuranceProvider { get; set; }
+
+    [Column("insurance_policy_no")]
+    public string InsurancePolicyNo { get; set; }
+
+    [Column("consent_forms")]
+    public string ConsentForms { get; set; }
+
+    [Column("emergency_contact")]
+    public string EmergencyContact { get; set; }
+
+    [Column("medical_history")]
+    public string MedicalHistory { get; set; }
 }

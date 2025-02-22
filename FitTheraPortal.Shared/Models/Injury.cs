@@ -3,27 +3,24 @@ using Supabase.Postgrest.Models;
 
 namespace FitTheraPortal.Shared.Models;
 
-[Table("Injury")]
+[Table("injury")]
 public class Injury : BaseModel
 {
-    [PrimaryKey("Id", false)]
-    public int Id { get; set; }
-    
-    [Column("injury_name")]
-    public string InjuryName { get; set; }
-    
+    [PrimaryKey("Id")]
+    public Guid Id { get; set; }
+
+    [Column("created_at")]
+    public DateTime CreatedAt { get; set; }
+
+    [Column("title")]
+    public string Title { get; set; }
+
+    [Column("description")]
+    public string Description { get; set; }
+
+    [Column("injury_date")]
+    public DateTime InjuryDate { get; set; }
+
     [Column("patient_id")]
-    public int PatientId { get; set; }
-    
-    [Column("therapist_id")]
-    public int TherapistId { get; set; }
-    
-    [Column("injury_description")]
-    public string InjuryDescription { get; set; }
-    
-    [Column("date_injured")]
-    public DateTime DateInjured { get; set; }
-    
-    [Column("date_ok")]
-    public DateTime DateOk { get; set; }
+    public Guid PatientId { get; set; }
 }

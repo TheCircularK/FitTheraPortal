@@ -4,6 +4,8 @@ namespace FitTheraPortal.Shared.Dtos;
 
 public class InjuryDto
 {
+    public InjuryDto(){ }
+    
     public int Id { get; set; }
     
     [DisplayName("Injury Name")]
@@ -16,11 +18,11 @@ public class InjuryDto
     public int TherapistId { get; set; }
 
     [DisplayName("Injury Description")]
-    public string InjuryDescription { get; set; }
+    public string? InjuryDescription { get; set; }
 
     [DisplayName("Date Injured")]
-    public DateTime DateInjured { get; set; }
+    public DateTime? DateInjured { get; set; }
 
     [DisplayName("Date OK")]
-    public DateTime DateOk { get; set; }
+    public DateTime? DateOk { get; set; }
 }
