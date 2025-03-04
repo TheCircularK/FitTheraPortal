@@ -3,10 +3,15 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using FitTheraPortal.Client;
-using FitTheraPortal.Client.HttpHandler;
-using FitTheraPortal.Client.Services;
+using FitTheraPortal.Client.Automapper;
+using FitTheraPortal.Client.DataServices.Implementations;
+using FitTheraPortal.Client.DataServices.Interfaces;
+using FitTheraPortal.Client.Repositories;
+using FitTheraPortal.Client.Repositories.Implementations;
+using FitTheraPortal.Client.Repositories.Interfaces;
 using MudBlazor;
 using MudBlazor.Services;
+using Supabase;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -18,21 +23,35 @@ builder.Services.AddMudServices(config =>
     config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.TopCenter;
 });
 
-// API http handler
-builder.Services.AddHttpClient("ServerAPI",
-    client =>
-    {
-        client.BaseAddress = new Uri("https://localhost:7025");
-    })
-    .AddHttpMessageHandler<AuthorizedMessageHandler>();
+// Supabase
+var supabaseUrl = "https://onkpktfonshhyflnvfen.supabase.co";
+var supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9ua3BrdGZvbnNoaHlmbG52ZmVuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzkzNjcxNjcsImV4cCI6MjA1NDk0MzE2N30.DFw6UT14zCSrdy2EZaoEOOpgp2tia8rpeLkhX-UxVMs";
 
-builder.Services.AddScoped<AuthorizedMessageHandler>();
+var supabaseOptions = new SupabaseOptions
+{
+    AutoRefreshToken = true,
+    AutoConnectRealtime = true
+};
 
-builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>()
-    .CreateClient("ServerAPI"));
+builder.Services.AddScoped<Supabase.Client>(provider => new Supabase.Client(supabaseUrl, supabaseKey, supabaseOptions));
 
 // Scoped data services
 builder.Services.AddScoped<IProfileDataService, ProfileDataService>();
+builder.Services.AddScoped<IPatientDataService, PatientDataService>();
+builder.Services.AddScoped<IInjuryDataService, InjuryDataService>();
+builder.Services.AddScoped<IInjuryTreatmentPlanDataService, InjuryTreatmentPlanDataService>();
+
+// Scoped repositories
+builder.Services.AddScoped<IPatientRepository, PatientRepository>();
+builder.Services.AddScoped<IProfileRepository, ProfileRepository>();
+builder.Services.AddScoped<IInjuryRepository, InjuryRepository>();
+builder.Services.AddScoped<IInjuryTreatmentPlanRepository, InjuryTreatmentPlanRepository>();
+
+// Automapper
+builder.Services.AddAutoMapper(typeof(MapperProfile));
+
+// Blazor Bootstrap
+builder.Services.AddBlazorBootstrap();
 
 builder.Services.AddOidcAuthentication(options =>
 {

@@ -1,5 +1,9 @@
 @page "/Profiles"
-@using FitTheraPortal.Client.Services
+@using FitTheraPortal.Client.DataServices.Interfaces
+@using FitTheraPortal.Client.Dtos
+
+@attribute [Authorize]
+
 <h3>Profiles</h3>
 
 @inject IProfileDataService ProfileService
