@@ -20,10 +20,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Components\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <_ContentIncludedByDefault Remove="Components\Injury\InjuryOverview.razor" />
       <_ContentIncludedByDefault Remove="wwwroot\lib\backup\bootstrap\dist\css\bootstrap-grid.css" />
       <_ContentIncludedByDefault Remove="wwwroot\lib\backup\bootstrap\dist\css\bootstrap-grid.css.map" />

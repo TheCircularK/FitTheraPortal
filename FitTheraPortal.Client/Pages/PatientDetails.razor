@@ -63,32 +63,7 @@ else
 {
     foreach (var injury in _patientInjuries)
     {
-        <div class="injury-card">
-            <h4>@injury.Title</h4>
-            <p><strong>Description:</strong> @injury.Description</p>
-            <p><strong>Injury Date:</strong> @injury.InjuryDate.ToShortDateString()</p>
-
-            @if (injury.TreatmentPlans.Any())
-            {
-                <details>
-                    <summary>Show Treatment Plans (@injury.TreatmentPlans.Count())</summary>
-                    <ul>
-                        @foreach (var plan in injury.TreatmentPlans)
-                        {
-                            <li>
-                                <p><strong>Start Date:</strong> @plan.DateStart.ToShortDateString()</p>
-                                <p><strong>End Date:</strong> @plan.DateEnd.ToShortDateString()</p>
-                                <p><strong>Confidence Score:</strong> @plan.OverallConfidenceScore</p>
-                            </li>
-                        }
-                    </ul>
-                </details>
-            }
-            else
-            {
-                <p>No treatment plans available.</p>
-            }
-        </div>
+        <FitTheraPortal.Client.Components.Injury.InjuryCard Injury="injury"></FitTheraPortal.Client.Components.Injury.InjuryCard>
     }
 }
 
@@ -101,8 +76,6 @@ else
     private IEnumerable<InjuryDto>? _patientInjuries;
 
     private bool _isLoading = true;
-
-    private bool _expanded = true;
 
     protected override async Task OnInitializedAsync()
     {
