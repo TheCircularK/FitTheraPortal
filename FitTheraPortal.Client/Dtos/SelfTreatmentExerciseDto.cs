@@ -26,5 +26,9 @@ namespace FitTheraPortal.Client.Dtos
 
         [Display(Name = "Reps")]
         public long Reps { get; set; }
+        
+        public ExerciseDto? Exercise { get; set; }
+        
+        public IEnumerable<ExerciseHealthDataDto>? HealthData { get; set; }
     }
 }

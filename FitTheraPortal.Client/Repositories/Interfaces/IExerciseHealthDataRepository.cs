@@ -9,4 +9,6 @@ public interface IExerciseHealthDataRepository
     Task CreateAsync(ExerciseHealthData exerciseHealthData);
     Task<ExerciseHealthData> UpdateAsync(ExerciseHealthData exerciseHealthData);
     Task<bool> DeleteAsync(Guid id);
+    
+    Task<IEnumerable<ExerciseHealthData>> GetBySelfTreatmentExerciseAsync(Guid id);
 }

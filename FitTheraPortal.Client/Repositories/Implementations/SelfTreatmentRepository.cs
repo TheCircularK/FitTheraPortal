@@ -54,4 +54,14 @@ public class SelfTreatmentRepository : ISelfTreatmentRepository
 
         return true;
     }
+
+    public async Task<IEnumerable<SelfTreatment>> GetByTreatmentPlanIdAsync(Guid id)
+    {
+        var response = await _client
+            .From<SelfTreatment>()
+            .Where(i => i.TreatmentPlanId == id)
+            .Get();
+        
+        return response.Models;
+    }
 }

@@ -36,16 +36,28 @@ var supabaseOptions = new SupabaseOptions
 builder.Services.AddScoped<Supabase.Client>(provider => new Supabase.Client(supabaseUrl, supabaseKey, supabaseOptions));
 
 // Scoped data services
-builder.Services.AddScoped<IProfileDataService, ProfileDataService>();
-builder.Services.AddScoped<IPatientDataService, PatientDataService>();
+builder.Services.AddScoped<IExerciseDataService, ExerciseDataService>();
+builder.Services.AddScoped<IExerciseHealthDataDataService, IExerciseHealthDataDataService>();
 builder.Services.AddScoped<IInjuryDataService, InjuryDataService>();
 builder.Services.AddScoped<IInjuryTreatmentPlanDataService, InjuryTreatmentPlanDataService>();
+builder.Services.AddScoped<IPatientDataService, PatientDataService>();
+builder.Services.AddScoped<IProfileDataService, ProfileDataService>();
+builder.Services.AddScoped<ISelfTreatmentDataService, SelfTreatmentDataService>();
+builder.Services.AddScoped<ISelfTreatmentExerciseDataService, SelfTreatmentExerciseDataService>();
 
 // Scoped repositories
-builder.Services.AddScoped<IPatientRepository, PatientRepository>();
-builder.Services.AddScoped<IProfileRepository, ProfileRepository>();
+builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+builder.Services.AddScoped<IClinicRepository, ClinicRepository>();
+builder.Services.AddScoped<IExerciseHealthDataRepository, ExerciseHealthDataRepository>();
+builder.Services.AddScoped<IExerciseRepository, ExerciseRepository>();
 builder.Services.AddScoped<IInjuryRepository, InjuryRepository>();
 builder.Services.AddScoped<IInjuryTreatmentPlanRepository, InjuryTreatmentPlanRepository>();
+builder.Services.AddScoped<IPatientRepository, PatientRepository>();
+builder.Services.AddScoped<IProfileRepository, ProfileRepository>();
+builder.Services.AddScoped<IScheduleRepository, ScheduleRepository>();
+builder.Services.AddScoped<ISelfTreatmentExerciseRepository, SelfTreatmentExerciseRepository>();
+builder.Services.AddScoped<ISelfTreatmentRepository, SelfTreatmentRepository>();
+builder.Services.AddScoped<ITherapistRepository, TherapistRepository>();
 
 // Automapper
 builder.Services.AddAutoMapper(typeof(MapperProfile));

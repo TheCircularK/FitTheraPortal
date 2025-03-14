@@ -41,5 +41,7 @@ namespace FitTheraPortal.Client.Dtos
 
         [Display(Name = "Active")]
         public bool Active { get; set; }
+        
+        public IEnumerable<SelfTreatmentDto>? SelfTreatment { get; set; }
     }
 }

@@ -29,5 +29,7 @@ namespace FitTheraPortal.Client.Dtos
 
         [Display(Name = "Treatment Plan ID")]
         public Guid TreatmentPlanId { get; set; }
+        
+        public IEnumerable<SelfTreatmentExerciseDto>? SelfTreatmentExercises { get; set; }
     }
 }

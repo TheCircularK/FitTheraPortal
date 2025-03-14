@@ -9,4 +9,6 @@ public interface ISelfTreatmentExerciseRepository
     Task CreateAsync(SelfTreatmentExercise selfTreatmentExercise);
     Task<SelfTreatmentExercise> UpdateAsync(SelfTreatmentExercise selfTreatmentExercise);
     Task<bool> DeleteAsync(Guid id);
+
+    Task<IEnumerable<SelfTreatmentExercise>> GetBySelfTreatmentAsync(Guid id);
 }

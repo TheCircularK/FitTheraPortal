@@ -26,9 +26,9 @@ public class ExerciseHealthDataRepository : IExerciseHealthDataRepository
         var response = await _client
             .From<ExerciseHealthData>()
             .Where(data => data.Id == id)
-            .Get();
+            .Single();
 
-        return response.Models.FirstOrDefault();
+        return response;
     }
 
     public async Task CreateAsync(ExerciseHealthData exerciseHealthData)
@@ -53,5 +53,15 @@ public class ExerciseHealthDataRepository : IExerciseHealthDataRepository
             .Delete();
 
         return true;
+    }
+
+    public async Task<IEnumerable<ExerciseHealthData>> GetBySelfTreatmentExerciseAsync(Guid id)
+    {
+        var response = await _client
+            .From<ExerciseHealthData>()
+            .Where(d => d.SelfTreatmentExerciseId == id)
+            .Get();
+
+        return response.Models;
     }
 }

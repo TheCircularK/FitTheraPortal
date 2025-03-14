@@ -9,4 +9,6 @@ public interface ISelfTreatmentRepository
     Task CreateAsync(SelfTreatment selfTreatment);
     Task<SelfTreatment> UpdateAsync(SelfTreatment selfTreatment);
     Task<bool> DeleteAsync(Guid id);
+    
+    Task<IEnumerable<SelfTreatment>> GetByTreatmentPlanIdAsync(Guid id);
 }

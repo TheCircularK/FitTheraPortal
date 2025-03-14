@@ -44,7 +44,7 @@ public class InjuryDataService : IInjuryDataService
         
         await Task.WhenAll(tasks);
 
-        mapped.OrderByDescending(i => i.InjuryDate);
+        mapped = mapped.OrderByDescending(i => i.InjuryDate);
         
         return mapped;
     }
