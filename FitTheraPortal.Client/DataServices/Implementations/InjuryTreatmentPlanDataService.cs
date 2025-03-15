@@ -12,12 +12,23 @@ public class InjuryTreatmentPlanDataService : IInjuryTreatmentPlanDataService
     private readonly IInjuryTreatmentPlanRepository _planRepository;
     private readonly ISelfTreatmentDataService _selfTreatmentDataService;
 
-    public InjuryTreatmentPlanDataService(IMapper mapper, IInjuryTreatmentPlanRepository injuryRepository)
+    public InjuryTreatmentPlanDataService(IMapper mapper, IInjuryTreatmentPlanRepository injuryRepository, ISelfTreatmentDataService selfTreatmentDataService)
     {
         _mapper = mapper;
         _planRepository = injuryRepository;
+        _selfTreatmentDataService = selfTreatmentDataService;
     }
-    
+
+    public async Task<InjuryTreatmentPlanDto> GetAsync(Guid id)
+    {
+        var response = await _planRepository.GetByIdAsync(id);
+        
+        var mapped = _mapper.Map<InjuryTreatmentPlanDto>(response);
+        
+        mapped.SelfTreatment = await _selfTreatmentDataService.GetByTreatmentPlanAsync(mapped.Id);
+        
+        return mapped;
+    }
     public async Task<IEnumerable<InjuryTreatmentPlanDto>> GetPlansByInjuryAsync(Guid injuryId)
     {
         // Get plans

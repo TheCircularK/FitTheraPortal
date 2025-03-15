@@ -37,7 +37,7 @@ builder.Services.AddScoped<Supabase.Client>(provider => new Supabase.Client(supa
 
 // Scoped data services
 builder.Services.AddScoped<IExerciseDataService, ExerciseDataService>();
-builder.Services.AddScoped<IExerciseHealthDataDataService, IExerciseHealthDataDataService>();
+builder.Services.AddScoped<IExerciseHealthDataDataService, ExerciseHealthDataDataService>();
 builder.Services.AddScoped<IInjuryDataService, InjuryDataService>();
 builder.Services.AddScoped<IInjuryTreatmentPlanDataService, InjuryTreatmentPlanDataService>();
 builder.Services.AddScoped<IPatientDataService, PatientDataService>();

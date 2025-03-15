@@ -22,22 +22,22 @@ namespace FitTheraPortal.Client.Dtos
         public DateTime DateEnd { get; set; }
 
         [Display(Name = "Overall Confidence Score")]
-        public long OverallConfidenceScore { get; set; }
+        public int? OverallConfidenceScore { get; set; }
 
         [Display(Name = "Vertical Oscillation Score")]
-        public long VerticalOscillationScore { get; set; }
+        public int? VerticalOscillationScore { get; set; }
 
         [Display(Name = "Step Count Confidence Score")]
-        public long StepCountConfidenceScore { get; set; }
+        public int? StepCountConfidenceScore { get; set; }
 
         [Display(Name = "Daily Activity Confidence Score")]
-        public long DailyActivityConfidenceScore { get; set; }
+        public int? DailyActivityConfidenceScore { get; set; }
 
         [Display(Name = "Heart Rate Confidence Score")]
-        public long HeartRateConfidenceScore { get; set; }
+        public int? HeartRateConfidenceScore { get; set; }
 
         [Display(Name = "Stride Length Confidence Score")]
-        public long StrideLengthConfidenceScore { get; set; }
+        public int? StrideLengthConfidenceScore { get; set; }
 
         [Display(Name = "Active")]
         public bool Active { get; set; }

@@ -25,7 +25,7 @@ public class SelfTreatment : BaseModel
     public DateTime? CompletedOn { get; set; } // Nullable to allow for incomplete treatments
 
     [Column("average_hearrate")]
-    public short AverageHeartRate { get; set; }
+    public int? AverageHeartRate { get; set; }
 
     [Column("pain_difficulty")]
     public string PainDifficulty { get; set; }

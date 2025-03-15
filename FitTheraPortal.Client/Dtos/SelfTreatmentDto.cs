@@ -22,7 +22,7 @@ namespace FitTheraPortal.Client.Dtos
         public DateTime? CompletedOn { get; set; } // Nullable to allow for incomplete treatments
 
         [Display(Name = "Average Heart Rate")]
-        public short AverageHeartRate { get; set; }
+        public int? AverageHeartRate { get; set; }
 
         [Display(Name = "Pain Difficulty")]
         public string PainDifficulty { get; set; }

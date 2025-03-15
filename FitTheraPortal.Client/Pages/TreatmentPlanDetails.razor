@@ -1,0 +1,38 @@
+@page "/TreatmentPlanDetails/{PlanId:guid}"
+@using FitTheraPortal.Client.DataServices.Interfaces
+@using FitTheraPortal.Client.Dtos
+@using FitTheraPortal.Client.Components.InjuryTreatmentPlan
+
+@inject IInjuryTreatmentPlanDataService PlanService
+
+<h3>Treatment Plan Details</h3>
+
+@if (_plan is null)
+{
+    <div>Loading...</div>
+}
+else
+{
+    <TreatmentPlanCard Plan="_plan"></TreatmentPlanCard>
+}
+
+@code {
+    [Parameter]
+    public Guid PlanId { get; set; }
+    
+    private InjuryTreatmentPlanDto? _plan { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        await GetInjuryTreatmentPlan();
+    }
+
+    private async Task GetInjuryTreatmentPlan()
+    {
+        var response = await PlanService.GetAsync(PlanId);
+
+        _plan = response;
+    }
+}

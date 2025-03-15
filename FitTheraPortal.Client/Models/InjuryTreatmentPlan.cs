@@ -6,7 +6,7 @@ namespace FitTheraPortal.Client.Models;
 [Table("injury-treatment-plan")]
 public class InjuryTreatmentPlan : BaseModel
 {
-    [PrimaryKey("Id")]
+    [PrimaryKey("id")]
     public Guid Id { get; set; }
 
     [Column("created_at")]
@@ -22,22 +22,22 @@ public class InjuryTreatmentPlan : BaseModel
     public DateTime DateEnd { get; set; }
 
     [Column("overall_confidence_score")]
-    public long OverallConfidenceScore { get; set; }
+    public int? OverallConfidenceScore { get; set; }
 
     [Column("vertical_ocillation_score")]
-    public long VerticalOscillationScore { get; set; }
+    public int? VerticalOscillationScore { get; set; }
 
     [Column("step_count_confidence_score")]
-    public long StepCountConfidenceScore { get; set; }
+    public int? StepCountConfidenceScore { get; set; }
 
     [Column("daily_activity_confidence_score")]
-    public long DailyActivityConfidenceScore { get; set; }
+    public int? DailyActivityConfidenceScore { get; set; }
 
     [Column("heart_rate_confidence_score")]
-    public long HeartRateConfidenceScore { get; set; }
+    public int? HeartRateConfidenceScore { get; set; }
 
     [Column("stride_length_confidence_score")]
-    public long StrideLengthConfidenceScore { get; set; }
+    public int? StrideLengthConfidenceScore { get; set; }
 
     [Column("active")]
     public bool Active { get; set; }
