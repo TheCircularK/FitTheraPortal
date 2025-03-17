@@ -43,8 +43,6 @@ public class PatientDataService : IPatientDataService
             var response = await _patientRepository.GetByIdAsync(id);
         
             var mapped = _mapper.Map<PatientDto>(response);
-        
-            Console.WriteLine($"PatientDataService.cs: Getting patient profile with user id: {mapped.UserId}");
             
             mapped.Profile = await _profileDataService.GetProfileAsync(mapped.UserId);
 

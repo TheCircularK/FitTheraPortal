@@ -56,4 +56,19 @@ public class AppointmentRepository : IAppointmentRepository
 
         return true;
     }
+
+    public Task<IEnumerable<Appointment>> GetByUserAsync(Guid userId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<IEnumerable<Appointment>> GetAppointmentsInRange(DateTime start, DateTime end)
+    {
+        var response = await _client
+            .From<Appointment>()
+            .Where(appointment => appointment.Start >= start && appointment.End <= end)
+            .Get();
+        
+        return response.Models;
+    }
 }

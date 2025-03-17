@@ -33,7 +33,6 @@ else
 
     private async Task GetPatients()
     {
-        Console.WriteLine("Patients.razor: Getting patients.");
         
         _patients = await PatientService.GetAllPatientsAsync();
     }

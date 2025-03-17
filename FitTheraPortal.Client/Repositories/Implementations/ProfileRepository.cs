@@ -23,8 +23,6 @@ public class ProfileRepository : IProfileRepository
 
     public async Task<Profile?> GetByIdAsync(Guid id)
     {
-        Console.WriteLine($"ProfileRepository: Getting profile with id: {id}");
-        
         var response = await _client
             .From<Profile>()
             .Where(profile => profile.Id == id)

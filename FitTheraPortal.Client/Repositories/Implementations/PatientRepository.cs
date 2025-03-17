@@ -23,8 +23,6 @@ public class PatientRepository : IPatientRepository
 
     public async Task<Patient?> GetByIdAsync(Guid id)
     {
-        Console.WriteLine($"PatientRepository.cs: trying to get patient details for id {id}.");
-
         try
         {
             var response = await _client

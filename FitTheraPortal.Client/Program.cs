@@ -36,6 +36,7 @@ var supabaseOptions = new SupabaseOptions
 builder.Services.AddScoped<Supabase.Client>(provider => new Supabase.Client(supabaseUrl, supabaseKey, supabaseOptions));
 
 // Scoped data services
+builder.Services.AddScoped<IAppointmentDataService, AppointmentDataService>();
 builder.Services.AddScoped<IExerciseDataService, ExerciseDataService>();
 builder.Services.AddScoped<IExerciseHealthDataDataService, ExerciseHealthDataDataService>();
 builder.Services.AddScoped<IInjuryDataService, InjuryDataService>();
