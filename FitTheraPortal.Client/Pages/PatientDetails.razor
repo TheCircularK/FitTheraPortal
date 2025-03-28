@@ -2,10 +2,13 @@
 @using System.Globalization
 @using FitTheraPortal.Client.DataServices.Interfaces
 @using FitTheraPortal.Client.Dtos
+@using FitTheraPortal.Client.Components.InjuryTreatmentPlan
+@using FitTheraPortal.Client.Components.Injury
 
 @inject IPatientDataService PatientService
 @inject ISnackbar Snackbar
 @inject IInjuryDataService InjuryService
+@inject IDialogService DialogService
 
 <h3>Patient Details</h3>
 
@@ -63,9 +66,12 @@ else
 {
     foreach (var injury in _patientInjuries)
     {
-        <FitTheraPortal.Client.Components.Injury.InjuryCard Injury="injury"></FitTheraPortal.Client.Components.Injury.InjuryCard>
+        <MudButton Color="Color.Secondary" OnClick="() => ShowNewPlanDialog(injury.Id)">New Treatment Plan</MudButton>
+        <InjuryCard Injury="injury"></InjuryCard>
     }
 }
+
+<MudDialog></MudDialog>
 
 @code {
     [Parameter]
@@ -76,7 +82,7 @@ else
     private IEnumerable<InjuryDto>? _patientInjuries;
 
     private bool _isLoading = true;
-
+    
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
@@ -112,4 +118,23 @@ else
             Snackbar.Add(ex.Message, Severity.Error);
         }
     }
+    
+    // New treatment plan
+    private async Task ShowNewPlanDialog(Guid injuryId)
+    {
+        var parameters = new DialogParameters
+        {
+            { nameof(NewTreatmentPlan.InjuryId), injuryId }
+        };
+
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.ExtraExtraLarge,
+            FullWidth = true,
+            CloseButton = true,
+        };
+
+        var dialog = await DialogService.ShowAsync<NewTreatmentPlan>("New Treatment Plan", parameters, options);
+    }
+
 }

@@ -1,0 +1,9 @@
+@using FitTheraPortal.Client.Dtos.CreateItems
+<h3>Add Exercise</h3>
+
+<div>Should show all exercises possible</div>
+
+@code {
+    [Parameter]
+    public EventCallback<NewTreatmentExerciseDto> NewExercise { get; set; }
+}

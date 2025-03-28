@@ -1,0 +1,35 @@
+@using FitTheraPortal.Client.Components.Exercise
+@using FitTheraPortal.Client.Dtos.CreateItems
+
+@inject IDialogService DialogService
+
+<h3>New Self Treatment</h3>
+
+<label>Date Due:</label>
+<br />
+<input type="date" @bind-value="_selfTreatment.DueDate" />
+<br />
+
+<label>Exercises:</label>
+<MudButton OnClick="ShowNewExerciseDialog">Add New</MudButton>
+
+@foreach (var exercise in _selfTreatment.Exercises)
+{
+    <div>@exercise.Title</div>
+}
+
+@code {
+    private NewSelfTreatmentDto _selfTreatment = new();
+
+    private async Task ShowNewExerciseDialog()
+    {
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.ExtraLarge,
+            FullWidth = true,
+            CloseButton = true,
+        };
+
+        var dialog = await DialogService.ShowAsync<AddExerciseToTreatment>("New Treatment Plan", options);
+    }
+}

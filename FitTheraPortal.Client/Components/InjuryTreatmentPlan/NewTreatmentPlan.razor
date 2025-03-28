@@ -1,0 +1,44 @@
+@using FitTheraPortal.Client.Components.SelfTreatment
+@using FitTheraPortal.Client.Dtos.CreateItems
+
+@inject IDialogService DialogService
+
+<h3>New Treatment Plan</h3>
+
+<label>Start Date</label>
+<br />
+<input type="date" @bind-value="_treatmentPlan.StartDate" />
+
+<label>End Date</label>
+<br />
+<input type="date" @bind-value="_treatmentPlan.EndDate" />
+
+@foreach (var treatment in _treatmentPlan.SelfTreatments)
+{
+    <div>@treatment.Title</div>
+}
+
+<button class="btn btn-secondary" @onclick="ShowNewTreatmentDialog">Add Self Treatment</button>
+
+<MudButton>Save</MudButton>
+
+@code {
+    [Parameter]
+    public Guid InjuryId { get; set; }
+
+    public Guid TherapistId { get; set; } = new Guid("d1e1fd6a-7ab2-4017-97da-76323df438d0");
+    
+    private NewTreatmentPlanDto _treatmentPlan = new();
+
+    private async Task ShowNewTreatmentDialog()
+    {
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.ExtraLarge,
+            FullWidth = true,
+            CloseButton = true,
+        };
+
+        var dialog = await DialogService.ShowAsync<NewSelfTreatment>("New Treatment Plan", options);
+    }
+}

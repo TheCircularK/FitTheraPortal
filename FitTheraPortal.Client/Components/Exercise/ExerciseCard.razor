@@ -1,0 +1,19 @@
+@using FitTheraPortal.Client.Dtos
+
+@if (Exercise is null)
+{
+    <div>Exercise is null. Check the database!</div>
+}
+else
+{
+    <div class="form-control">
+        <h5>@Exercise.Name</h5>
+        <img src="@Exercise.Gif" alt="@Exercise.Name"/>
+    </div>
+}
+
+
+@code {
+    [Parameter]
+    public ExerciseDto? Exercise { get; set; }
+}
