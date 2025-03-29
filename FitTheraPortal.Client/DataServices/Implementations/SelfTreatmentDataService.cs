@@ -1,6 +1,7 @@
 using AutoMapper;
 using FitTheraPortal.Client.DataServices.Interfaces;
 using FitTheraPortal.Client.Dtos;
+using FitTheraPortal.Client.Models;
 using FitTheraPortal.Client.Repositories.Interfaces;
 
 namespace FitTheraPortal.Client.DataServices.Implementations;
@@ -39,5 +40,12 @@ public class SelfTreatmentDataService : ISelfTreatmentDataService
         });
         
         return mapped;
+    }
+
+    public async Task<Guid?> CreateAsync(SelfTreatment selfTreatment)
+    {
+        var response = await _selfTreatmentRepository.CreateAsync(selfTreatment);
+
+        return response;
     }
 }

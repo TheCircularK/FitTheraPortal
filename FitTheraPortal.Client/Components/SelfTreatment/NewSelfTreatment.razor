@@ -1,25 +1,31 @@
 @using FitTheraPortal.Client.Components.Exercise
 @using FitTheraPortal.Client.Dtos.CreateItems
+@using MudBlazor.Extensions
 
 @inject IDialogService DialogService
 
-<h3>New Self Treatment</h3>
-
-<label>Date Due:</label>
-<br />
-<input type="date" @bind-value="_selfTreatment.DueDate" />
-<br />
+<div class="input-group">
+    <MudTextField Label="Title" @bind-Value="_selfTreatment.Title"></MudTextField>
+    <br/>
+    <MudDatePicker Label="Date Due" bind-Date="_selfTreatment.DueDate"></MudDatePicker>
+    <br />
+</div>
 
 <label>Exercises:</label>
-<MudButton OnClick="ShowNewExerciseDialog">Add New</MudButton>
+<MudButton OnClick="ShowNewExerciseDialog">Add Exercise</MudButton>
 
 @foreach (var exercise in _selfTreatment.Exercises)
 {
     <div>@exercise.Title</div>
 }
 
+<MudButton Color="Color.Primary" OnClick="SaveAndReturn">Save</MudButton>
+
 @code {
-    private NewSelfTreatmentDto _selfTreatment = new();
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; }
+    
+    private NewSelfTreatmentDto _selfTreatment = new NewSelfTreatmentDto();
 
     private async Task ShowNewExerciseDialog()
     {
@@ -30,6 +36,19 @@
             CloseButton = true,
         };
 
-        var dialog = await DialogService.ShowAsync<AddExerciseToTreatment>("New Treatment Plan", options);
+        var dialog = await DialogService.ShowAsync<AddExerciseToTreatment>("Add Exercise", options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            var data = result.Data.As<NewTreatmentExerciseDto>();
+            Console.WriteLine($"Appending new exercise: {data.Title}");
+            _selfTreatment.Exercises.Add(data);
+        }
+    }
+
+    private void SaveAndReturn()
+    {
+        MudDialog.Close(DialogResult.Ok(_selfTreatment));
     }
 }

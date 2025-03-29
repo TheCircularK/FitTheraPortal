@@ -122,6 +122,8 @@ else
     // New treatment plan
     private async Task ShowNewPlanDialog(Guid injuryId)
     {
+        Console.WriteLine($"Making new treatment plan for injury {injuryId}");
+        
         var parameters = new DialogParameters
         {
             { nameof(NewTreatmentPlan.InjuryId), injuryId }
@@ -135,6 +137,7 @@ else
         };
 
         var dialog = await DialogService.ShowAsync<NewTreatmentPlan>("New Treatment Plan", parameters, options);
+        var result = await dialog.Result;
     }
 
 }

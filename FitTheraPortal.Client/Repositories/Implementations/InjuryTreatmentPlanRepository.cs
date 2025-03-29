@@ -1,5 +1,6 @@
 using FitTheraPortal.Client.Models;
 using FitTheraPortal.Client.Repositories.Interfaces;
+using Supabase.Postgrest;
 
 namespace FitTheraPortal.Client.Repositories.Implementations;
 
@@ -41,11 +42,13 @@ public class InjuryTreatmentPlanRepository : IInjuryTreatmentPlanRepository
         return response.Models;
     }
 
-    public async Task CreateAsync(InjuryTreatmentPlan plan)
+    public async Task<Guid?> CreateAsync(InjuryTreatmentPlan plan)
     {
-        await _client
+        var inserted = await _client
             .From<InjuryTreatmentPlan>()
-            .Insert(plan);
+            .Insert(plan, new QueryOptions { Returning = QueryOptions.ReturnType.Representation });
+
+        return inserted?.Models?.FirstOrDefault()?.Id;
     }
 
     public async Task<InjuryTreatmentPlan> UpdateAsync(InjuryTreatmentPlan plan)

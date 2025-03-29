@@ -19,14 +19,14 @@ public class SelfTreatmentExercise : BaseModel
     public Guid ExerciseId { get; set; }
 
     [Column("exercise_duration")]
-    public long ExerciseDuration { get; set; }
+    public int? ExerciseDuration { get; set; }
 
     [Column("rest_after_seconds")]
-    public long RestAfterSeconds { get; set; }
+    public int? RestAfterSeconds { get; set; }
 
     [Column("weight_lbs")]
-    public long WeightLbs { get; set; }
+    public int? WeightLbs { get; set; }
 
     [Column("reps")]
-    public long Reps { get; set; }
+    public int? Reps { get; set; }
 }

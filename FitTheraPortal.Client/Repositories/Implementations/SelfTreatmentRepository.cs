@@ -1,5 +1,6 @@
 using FitTheraPortal.Client.Models;
 using FitTheraPortal.Client.Repositories.Interfaces;
+using Supabase.Postgrest;
 
 namespace FitTheraPortal.Client.Repositories.Implementations;
 
@@ -31,11 +32,13 @@ public class SelfTreatmentRepository : ISelfTreatmentRepository
         return response.Models.FirstOrDefault();
     }
 
-    public async Task CreateAsync(SelfTreatment selfTreatment)
+    public async Task<Guid?> CreateAsync(SelfTreatment selfTreatment)
     {
-        await _client
+        var inserted = await _client
             .From<SelfTreatment>()
-            .Insert(selfTreatment);
+            .Insert(selfTreatment, new QueryOptions { Returning = QueryOptions.ReturnType.Representation });
+
+        return inserted?.Model?.Id;
     }
 
     public async Task<SelfTreatment> UpdateAsync(SelfTreatment selfTreatment)

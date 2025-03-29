@@ -24,4 +24,13 @@ public class ExerciseDataService : IExerciseDataService
         
         return mapped;
     }
+
+    public async Task<IEnumerable<ExerciseDto>> GetAllAsync()
+    {
+        var response = await _exerciseRepository.GetAllAsync();
+        
+        var mapped = _mapper.Map<IEnumerable<ExerciseDto>>(response);
+        
+        return mapped;
+    }
 }

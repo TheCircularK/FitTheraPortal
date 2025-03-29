@@ -19,7 +19,7 @@ public class InjuryTreatmentPlan : BaseModel
     public DateTime DateStart { get; set; }
 
     [Column("date_end")]
-    public DateTime DateEnd { get; set; }
+    public DateTime? DateEnd { get; set; }
 
     [Column("overall_confidence_score")]
     public int? OverallConfidenceScore { get; set; }
@@ -41,4 +41,7 @@ public class InjuryTreatmentPlan : BaseModel
 
     [Column("active")]
     public bool Active { get; set; }
+    
+    [Column("therapist_id")]
+    public Guid TherapistId { get; set; }
 }
