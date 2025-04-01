@@ -25,6 +25,7 @@ builder.Services.AddMudServices(config =>
 
 // Supabase
 var supabaseUrl = "https://onkpktfonshhyflnvfen.supabase.co";
+// Note -- this is safe to use in the browser because of RLS and other access controls.
 var supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9ua3BrdGZvbnNoaHlmbG52ZmVuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzkzNjcxNjcsImV4cCI6MjA1NDk0MzE2N30.DFw6UT14zCSrdy2EZaoEOOpgp2tia8rpeLkhX-UxVMs";
 
 var supabaseOptions = new SupabaseOptions
