@@ -1,0 +1,93 @@
+@using FitTheraPortal.Client.DataServices.Interfaces
+@using FitTheraPortal.Client.Dtos
+@using FitTheraPortal.Client.Dtos.CreateItems
+
+@inject IExerciseDataService ExerciseService
+@inject ISnackbar Snackbar
+
+<style>
+    .exercise-container {
+        display: flex;
+        overflow-x: auto;
+        gap: 10px;
+        padding: 10px;
+        scroll-snap-type: x mandatory;
+        white-space: nowrap;
+    }
+</style>
+
+<div class="input-group">
+    <label>Duration</label>
+    <input type="number" @bind-value="_newExercise.ExerciseDuration" class="form-control"/>
+    <br />
+
+    <label>Rest Length</label>
+    <input type="number" @bind-value="_newExercise.RestAfterSeconds" class="form-control"/>
+    <br />
+
+    <label>Weight</label>
+    <input type="number" @bind-value="_newExercise.WeightLbs" class="form-control"/>
+    <br />
+
+    <label>Reps</label>
+    <input type="number" @bind-value="_newExercise.Reps" class="form-control"/>
+    <br />
+</div>
+
+<div class="exercise-container">
+    @foreach (var exercise in _exercises)
+    {
+        <ExerciseCard Exercise="exercise"></ExerciseCard>
+        <button @onclick="() => SelectExercise(exercise)">Select</button>
+    }
+</div>
+
+<MudButton OnClick="SelectAndReturn">Save</MudButton>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; }
+
+    private void Cancel() => MudDialog.Cancel();
+
+    private IEnumerable<ExerciseDto> _exercises = new List<ExerciseDto>();
+
+    private NewTreatmentExerciseDto _newExercise = new NewTreatmentExerciseDto()
+    {
+        ExerciseDuration = 30,
+        Reps = 5,
+        RestAfterSeconds = 30,
+        WeightLbs = 15,
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetExercises();
+    }
+
+    private async Task GetExercises()
+    {
+        _exercises = await ExerciseService.GetAllAsync();
+    }
+
+    private void SelectExercise(ExerciseDto exercise)
+    {
+        _newExercise.ExerciseId = exercise.Id;
+        _newExercise.Title = exercise.Name;
+        
+        Console.WriteLine($"Selected exercise: {exercise.Name}");
+    }
+
+    private void SelectAndReturn()
+    {
+        if (_newExercise.ExerciseId is null)
+        {
+            Snackbar.Add("Please select an exercise or press X to cancel.", Severity.Error);
+        }
+        else
+        {
+            Console.WriteLine($"Returning with new exercise: {_newExercise.Title}");
+            MudDialog.Close(DialogResult.Ok(_newExercise));
+        }
+    }
+}

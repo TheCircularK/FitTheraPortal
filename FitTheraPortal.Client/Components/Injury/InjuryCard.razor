@@ -1,0 +1,44 @@
+@using FitTheraPortal.Client.Dtos
+
+@inject NavigationManager Navigation
+
+@if (Injury is null)
+{
+    <div>Failed to load injury details!</div>
+}
+else
+{
+    <div class="injury-card">
+        <h4>@Injury.Title</h4>
+        <p><strong>Description:</strong> @Injury.Description</p>
+        <p><strong>Injury Date:</strong> @Injury.InjuryDate.ToShortDateString()</p>
+
+        @if (Injury.TreatmentPlans.Any())
+        {
+            <h5>Treatment Plans</h5>
+            <ul>
+                @foreach (var plan in Injury.TreatmentPlans)
+                {
+                    <div class="form-control">
+                        <FitTheraPortal.Client.Components.InjuryTreatmentPlan.TreatmentPlanCard Plan="plan"></FitTheraPortal.Client.Components.InjuryTreatmentPlan.TreatmentPlanCard>
+                        <button class="btn btn-primary" @onclick="() => NavigateToPlanDetails(plan.Id)">Edit</button>
+                    </div>
+                }
+            </ul>
+        }
+        else
+        {
+            <p>No treatment plans available.</p>
+        }
+    </div>
+}
+
+@code {
+    [Parameter]
+    public InjuryDto? Injury { get; set; }
+
+    private void NavigateToPlanDetails(Guid id)
+    {
+        Navigation.NavigateTo($"TreatmentPlanDetails/{id}");
+    }
+}

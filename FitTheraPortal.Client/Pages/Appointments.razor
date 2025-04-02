@@ -1,0 +1,53 @@
+@page "/Appointments"
+@using BlazorCalendar
+@using BlazorCalendar.Models
+@using FitTheraPortal.Client.DataServices.Interfaces
+
+<h3>Appointments</h3>
+
+@inject IAppointmentDataService AppointmentService
+
+<!--Calendar-->
+<link href="_content/BlazorCalendar/BlazorCalendar.css" rel="stylesheet" />
+
+<select @bind="@calendarView">
+    <option value="@DisplayedView.Annual">Annual view</option>
+    <option value="@DisplayedView.Monthly" selected>Monthly view</option>
+    <option value="@DisplayedView.Weekly">Weekly view</option>
+</select>
+
+<CalendarContainer DisplayedView="@calendarView" TasksList="_tasks.ToArray()">
+    <AnnualView></AnnualView>
+    <MonthlyView></MonthlyView>
+    <WeekView></WeekView>
+</CalendarContainer>
+
+@code {
+    private List<Tasks> _tasks = new List<Tasks>();
+
+    private DisplayedView calendarView = DisplayedView.Monthly;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        await GetTasks();
+    }
+
+    private async Task GetTasks()
+    {
+        var response = await AppointmentService.GetEventsByMonthAsync(DateTime.Now);
+
+        _tasks = response.ToList();
+
+        Console.WriteLine($"Retrieved {_tasks.Count} tasks.");
+        
+        foreach (var item in _tasks)
+        {
+            Console.WriteLine("Here's the tasks.");
+            Console.WriteLine(item.ID);
+            Console.WriteLine(item.Caption);
+            Console.WriteLine(item.Code);
+        }
+    }
+}

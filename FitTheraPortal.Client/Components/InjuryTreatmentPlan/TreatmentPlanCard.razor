@@ -1,0 +1,94 @@
+@using FitTheraPortal.Client.Dtos
+
+@if (Plan is null)
+{
+    <div>Failed to load treatment plan!</div>
+}
+else
+{
+    <div style="display: flex; gap: 20px; align-items: flex-start;">
+        <RadarChart @ref="radarChart" Width="600"></RadarChart>
+
+        <ul style="list-style: none; padding: 0; margin: 0;">
+            <li>
+                <p><strong>Start Date:</strong> @Plan.DateStart.ToShortDateString()</p>
+                <p><strong>End Date:</strong> @Plan.DateEnd.ToShortDateString()</p>
+                <p><strong>Overall Confidence Score:</strong> @Plan.OverallConfidenceScore</p>
+            </li>
+        </ul>
+    </div>
+}
+
+
+@code {
+    [Parameter]
+    public InjuryTreatmentPlanDto? Plan { get; set; }
+
+    private RadarChart radarChart = default!;
+    private ChartData _chartData = default!;
+    private RadarChartOptions _chartOptions = default!;
+    private string[]? _chartColors;
+
+    protected override void OnInitialized()
+    {
+        SetupChart();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await radarChart.InitializeAsync(_chartData, _chartOptions);
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+    
+    private void SetupChart()
+    {
+        _chartOptions = new() { Responsive = true };
+        
+        _chartColors = ColorUtility.CategoricalSixColors;
+
+        var labels = GetChartLabels();
+        var dataSet = GetDataSet();
+        var data = new List<IChartDataset>(1) { dataSet };
+
+        _chartData = new ChartData()
+        {
+            Labels = labels,
+            Datasets = data,
+        };
+    }
+    
+    private List<string> GetChartLabels()
+    {
+        var labels = new List<string>()
+        {
+            "Vertical Oscillation",
+            "Step Count",
+            "Daily Activity",
+            "Heart Rate",
+            "Stride Length"
+        };
+
+        return labels;
+    }
+
+    private IChartDataset GetDataSet()
+    {
+        var color = _chartColors[1].ToColor();
+        
+        var data = new RadarChartDataset()
+        {
+            Label = "Confidence",
+            Data = [Plan.VerticalOscillationScore, Plan.StepCountConfidenceScore, Plan.DailyActivityConfidenceScore, Plan.HeartRateConfidenceScore, Plan.StrideLengthConfidenceScore],
+            BackgroundColor = color.ToRgbaString(),
+            BorderColor = color.ToRgbaString(0.8),
+            BorderWidth = 2,
+            Fill = true,
+            HoverBorderWidth = 4,
+        };
+
+        return data;
+    }
+}

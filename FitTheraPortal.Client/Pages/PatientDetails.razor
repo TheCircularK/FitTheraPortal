@@ -1,0 +1,143 @@
+@page "/Patient/{PatientId:guid}"
+@using System.Globalization
+@using FitTheraPortal.Client.DataServices.Interfaces
+@using FitTheraPortal.Client.Dtos
+@using FitTheraPortal.Client.Components.InjuryTreatmentPlan
+@using FitTheraPortal.Client.Components.Injury
+
+@inject IPatientDataService PatientService
+@inject ISnackbar Snackbar
+@inject IInjuryDataService InjuryService
+@inject IDialogService DialogService
+
+<h3>Patient Details</h3>
+
+@if (_isLoading)
+{
+    <p>Loading patient data...</p>
+}
+else if (_patient == null)
+{
+    <p>Error: Patient not found.</p>
+}
+else
+{
+    @if (_patient.Profile != null)
+    {
+        <table class="table">
+            <tbody>
+            <tr>
+                <th>Name</th>
+                <td>@_patient.Profile.FirstName @_patient.Profile.LastName</td>
+            </tr>
+            <tr>
+                <th>Address</th>
+                <td>
+                    <span>@_patient.Profile.StreetAddress</span>
+                    <span>@_patient.Profile.City @_patient.Profile.State, @_patient.Profile.ZipCode</span>
+                </td>
+            </tr>
+            <tr>
+                <th>Phone Number</th>
+                <td>@_patient.Profile.PhoneNumber</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>@_patient.Profile.Email</td>
+            </tr>
+            <tr>
+                <th>Gender</th>
+                <td>@_patient.Profile.Gender</td>
+            </tr>
+            <tr>
+                <th>Birthdate</th>
+                <td>@_patient.Profile.Birthdate.ToString("D", CultureInfo.CurrentCulture)</td>
+            </tr>
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No profile information available.</p>
+    }
+}
+
+@if (_patientInjuries != null)
+{
+    foreach (var injury in _patientInjuries)
+    {
+        <MudButton Color="Color.Secondary" OnClick="() => ShowNewPlanDialog(injury.Id)">New Treatment Plan</MudButton>
+        <InjuryCard Injury="injury"></InjuryCard>
+    }
+}
+
+<MudDialog></MudDialog>
+
+@code {
+    [Parameter]
+    public Guid PatientId { get; set; }
+
+    private PatientDto? _patient;
+
+    private IEnumerable<InjuryDto>? _patientInjuries;
+
+    private bool _isLoading = true;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        await GetPatientInfo();
+        await GetPatientInjuries();
+    }
+
+    private async Task GetPatientInfo()
+    {
+        try
+        {
+            _patient = await PatientService.GetPatientAsync(PatientId);
+            _isLoading = false;
+            
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add(ex.Message, Severity.Error);
+            Console.WriteLine($"Error in PatientDetails.razor: {ex.Message}");
+        }
+    }
+
+    private async Task GetPatientInjuries()
+    {
+        try
+        {
+            _patientInjuries = await InjuryService.GetByUserAsync(PatientId);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add(ex.Message, Severity.Error);
+        }
+    }
+    
+    // New treatment plan
+    private async Task ShowNewPlanDialog(Guid injuryId)
+    {
+        Console.WriteLine($"Making new treatment plan for injury {injuryId}");
+        
+        var parameters = new DialogParameters
+        {
+            { nameof(NewTreatmentPlan.InjuryId), injuryId }
+        };
+
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.ExtraExtraLarge,
+            FullWidth = true,
+            CloseButton = true,
+        };
+
+        var dialog = await DialogService.ShowAsync<NewTreatmentPlan>("New Treatment Plan", parameters, options);
+        var result = await dialog.Result;
+    }
+
+}
