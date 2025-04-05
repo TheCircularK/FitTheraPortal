@@ -4,28 +4,73 @@
 
 @inject IDialogService DialogService
 
-<div class="input-group">
-    <MudTextField Label="Title" @bind-Value="_selfTreatment.Title"></MudTextField>
-    <br/>
-    <MudDatePicker Label="Date Due" bind-Date="_selfTreatment.DueDate"></MudDatePicker>
-    <br />
+<div class="container p-4">
+    <h4 class="text-center mb-4" style="color: #67baf3;">New Self Treatment</h4>
+
+
+    <div class="mb-3">
+        <label for="treatmentTitle" class="form-label">Title</label>
+        <input type="text" id="treatmentTitle" class="form-control" @bind="_selfTreatment.Title" />
+    </div>
+
+    <div class="mb-4">
+        <label for="dueDate" class="form-label">Date Due</label>
+        <input type="date" id="dueDate" class="form-control" @bind="_selfTreatment.DueDate" />
+    </div>
+
+    <hr class="my-4" />
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="mb-4" style="color: #67baf3;">Exercises</h5>
+        <button class="btn btn-warning" @onclick="ShowNewExerciseDialog">➕ Add Exercise</button>
+    </div>
+
+    @if (_selfTreatment.Exercises.Any())
+    {
+        <ul class="list-group mb-4">
+            @foreach (var exercise in _selfTreatment.Exercises)
+            {
+                <li class="list-group-item d-flex justify-content-between align-items-start flex-column">
+                    <div class="w-100">
+                        <strong>@exercise.Title</strong>
+                        <div class="small text-muted mt-1">
+                            Reps: @exercise.Reps |
+                            Weight: @exercise.WeightLbs lbs |
+                            Duration: @exercise.ExerciseDuration sec |
+                            Rest: @exercise.RestAfterSeconds sec
+                        </div>
+                    </div>
+                    <div class="w-100 d-flex justify-content-end mt-2">
+                        <button class="btn btn-sm btn-outline-danger" @onclick="() => RemoveExercise(exercise)">
+                            Remove
+                        </button>
+                    </div>
+                </li>
+
+
+            }
+        </ul>
+    }
+    else
+    {
+        <p class="text-muted">No exercises added yet.</p>
+    }
+
+    <div class="d-flex justify-content-end">
+        <button class="btn btn-primary" @onclick="SaveAndReturn">Save</button>
+    </div>
 </div>
-
-<label>Exercises:</label>
-<MudButton OnClick="ShowNewExerciseDialog">Add Exercise</MudButton>
-
-@foreach (var exercise in _selfTreatment.Exercises)
-{
-    <div>@exercise.Title</div>
-}
-
-<MudButton Color="Color.Primary" OnClick="SaveAndReturn">Save</MudButton>
 
 @code {
     [CascadingParameter]
     private IMudDialogInstance MudDialog { get; set; }
-    
-    private NewSelfTreatmentDto _selfTreatment = new NewSelfTreatmentDto();
+
+    private NewSelfTreatmentDto _selfTreatment = new();
+
+    protected override void OnInitialized()
+    {
+        _selfTreatment.DueDate = DateTime.Today;
+    }
 
     private async Task ShowNewExerciseDialog()
     {
@@ -45,6 +90,11 @@
             Console.WriteLine($"Appending new exercise: {data.Title}");
             _selfTreatment.Exercises.Add(data);
         }
+    }
+
+    private void RemoveExercise(NewTreatmentExerciseDto exercise)
+    {
+        _selfTreatment.Exercises.Remove(exercise);
     }
 
     private void SaveAndReturn()

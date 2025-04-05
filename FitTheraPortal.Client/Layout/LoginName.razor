@@ -3,14 +3,20 @@
 
 @inject NavigationManager Navigation
 
-<AuthorizeView>
-    <Authorized>
-        <div class="form-control">@context.User.Identity.Name <a href="#" @onclick="SignOut">Log Out</a></div>
-    </Authorized>
-    <NotAuthorized>
-        <a href="authentication/login">Log In</a>
-    </NotAuthorized>
-</AuthorizeView>
+<div class="d-flex justify-content-end align-items-center pe-3 py-2">
+    <AuthorizeView>
+        <Authorized>
+            <div class="d-flex gap-2 align-items-center">
+                <span class="fw-semibold text-dark">@context.User.Identity.Name</span>
+                <a href="#" @onclick="SignOut"
+                   class="btn btn-sm custom-logout-button">Log Out</a>
+            </div>
+        </Authorized>
+        <NotAuthorized>
+            <a href="authentication/login" class="btn btn-sm custom-login-button">Log In</a>
+        </NotAuthorized>
+    </AuthorizeView>
+</div>
 
 @code {
     private async Task SignOut(MouseEventArgs args)
@@ -18,3 +24,4 @@
         Microsoft.AspNetCore.Components.WebAssembly.Authentication.NavigationManagerExtensions.NavigateToLogout(Navigation, "authentication/logout");
     }
 }
+

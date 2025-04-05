@@ -1,5 +1,7 @@
 @page "/Patient/{PatientId:guid}"
 @using System.Globalization
+@using MudBlazor
+@using FitTheraPortal.Client.DataServices.Interfaces
 @using FitTheraPortal.Client.DataServices.Interfaces
 @using FitTheraPortal.Client.Dtos
 @using FitTheraPortal.Client.Components.InjuryTreatmentPlan
@@ -10,83 +12,87 @@
 @inject IInjuryDataService InjuryService
 @inject IDialogService DialogService
 
-<h3>Patient Details</h3>
+<MudContainer MaxWidth="MaxWidth.Medium" Class="mt-6">
+    <MudText Typo="Typo.h4" GutterBottom="true">Patient Details</MudText>
 
-@if (_isLoading)
-{
-    <p>Loading patient data...</p>
-}
-else if (_patient == null)
-{
-    <p>Error: Patient not found.</p>
-}
-else
-{
-    @if (_patient.Profile != null)
+    @if (_isLoading)
     {
-        <table class="table">
-            <tbody>
-            <tr>
-                <th>Name</th>
-                <td>@_patient.Profile.FirstName @_patient.Profile.LastName</td>
-            </tr>
-            <tr>
-                <th>Address</th>
-                <td>
-                    <span>@_patient.Profile.StreetAddress</span>
-                    <span>@_patient.Profile.City @_patient.Profile.State, @_patient.Profile.ZipCode</span>
-                </td>
-            </tr>
-            <tr>
-                <th>Phone Number</th>
-                <td>@_patient.Profile.PhoneNumber</td>
-            </tr>
-            <tr>
-                <th>Email</th>
-                <td>@_patient.Profile.Email</td>
-            </tr>
-            <tr>
-                <th>Gender</th>
-                <td>@_patient.Profile.Gender</td>
-            </tr>
-            <tr>
-                <th>Birthdate</th>
-                <td>@_patient.Profile.Birthdate.ToString("D", CultureInfo.CurrentCulture)</td>
-            </tr>
-            </tbody>
-        </table>
+        <MudProgressCircular Indeterminate="true" Color="Color.Primary" />
+    }
+    else if (_patient == null)
+    {
+        <MudAlert Severity="Severity.Error">Error: Patient not found.</MudAlert>
+    }
+    else if (_patient.Profile != null)
+    {
+        <MudPaper Class="p-4 mb-6">
+            <MudGrid>
+                <MudItem xs="12" sm="6">
+                    <MudText Typo="Typo.subtitle2" Color="Color.Primary">Phone</MudText>
+                    <MudText>@_patient.Profile.FirstName @_patient.Profile.LastName</MudText>
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudText Typo="Typo.subtitle2" Color="Color.Primary">Phone</MudText>
+                    <MudText>@_patient.Profile.PhoneNumber</MudText>
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudText Typo="Typo.subtitle2" Color="Color.Primary">Email</MudText>
+                    <MudText>@_patient.Profile.Email</MudText>
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudText Typo="Typo.subtitle2" Color="Color.Primary">Gender</MudText>
+                    <MudText>@_patient.Profile.Gender</MudText>
+                </MudItem>
+                <MudItem xs="12">
+                    <MudText Typo="Typo.subtitle2" Color="Color.Primary">Address</MudText>
+                    <MudText>
+                        @_patient.Profile.StreetAddress<br />
+                        @_patient.Profile.City, @_patient.Profile.State @_patient.Profile.ZipCode
+                    </MudText>
+                </MudItem>
+                <MudItem xs="12">
+                    <MudText Typo="Typo.subtitle2" Color="Color.Primary">Birthdate</MudText>
+                    <MudText>@_patient.Profile.Birthdate.ToString("D", CultureInfo.CurrentCulture)</MudText>
+                </MudItem>
+            </MudGrid>
+        </MudPaper>
     }
     else
     {
-        <p>No profile information available.</p>
+        <MudAlert Severity="Severity.Warning">No profile information available.</MudAlert>
     }
-}
 
-@if (_patientInjuries != null)
-{
-    foreach (var injury in _patientInjuries)
+    @if (_patientInjuries?.Any() == true)
     {
-        <MudButton Color="Color.Secondary" OnClick="() => ShowNewPlanDialog(injury.Id)">New Treatment Plan</MudButton>
-        <InjuryCard Injury="injury"></InjuryCard>
-    }
-}
+        <MudText Typo="Typo.h5" Class="mt-6 mb-2">Injuries</MudText>
 
-<MudDialog></MudDialog>
+        @foreach (var injury in _patientInjuries)
+        {
+            <MudPaper Class="mb-4 p-3">
+                <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                           OnClick="@(() => ShowNewPlanDialog(injury.Id))"
+                           StartIcon="@Icons.Material.Filled.Add">
+                    New Treatment Plan
+                </MudButton>
+
+                <MudDivider Class="my-2" />
+                <InjuryCard Injury="injury" />
+            </MudPaper>
+        }
+    }
+
+    <MudDialog />
+</MudContainer>
 
 @code {
-    [Parameter]
-    public Guid PatientId { get; set; }
+    [Parameter] public Guid PatientId { get; set; }
 
     private PatientDto? _patient;
-
     private IEnumerable<InjuryDto>? _patientInjuries;
-
     private bool _isLoading = true;
-    
+
     protected override async Task OnInitializedAsync()
     {
-        await base.OnInitializedAsync();
-
         await GetPatientInfo();
         await GetPatientInjuries();
     }
@@ -96,14 +102,16 @@ else
         try
         {
             _patient = await PatientService.GetPatientAsync(PatientId);
-            _isLoading = false;
-            
-            StateHasChanged();
         }
         catch (Exception ex)
         {
             Snackbar.Add(ex.Message, Severity.Error);
             Console.WriteLine($"Error in PatientDetails.razor: {ex.Message}");
+        }
+        finally
+        {
+            _isLoading = false;
+            StateHasChanged();
         }
     }
 
@@ -118,12 +126,9 @@ else
             Snackbar.Add(ex.Message, Severity.Error);
         }
     }
-    
-    // New treatment plan
+
     private async Task ShowNewPlanDialog(Guid injuryId)
     {
-        Console.WriteLine($"Making new treatment plan for injury {injuryId}");
-        
         var parameters = new DialogParameters
         {
             { nameof(NewTreatmentPlan.InjuryId), injuryId }
@@ -139,5 +144,4 @@ else
         var dialog = await DialogService.ShowAsync<NewTreatmentPlan>("New Treatment Plan", parameters, options);
         var result = await dialog.Result;
     }
-
 }

@@ -1,5 +1,7 @@
-@using FitTheraPortal.Client.Dtos
 
+@using System.Runtime.Serialization
+@using FitTheraPortal.Client.Dtos
+@using FitTheraPortal.Client.Models
 @inject NavigationManager Navigation
 
 @if (Injury is null)
@@ -8,37 +10,81 @@
 }
 else
 {
-    <div class="injury-card">
+    <div class="card p-3 mb-3">
         <h4>@Injury.Title</h4>
-        <p><strong>Description:</strong> @Injury.Description</p>
         <p><strong>Injury Date:</strong> @Injury.InjuryDate.ToShortDateString()</p>
 
-        @if (Injury.TreatmentPlans.Any())
+        @if (IsEditing)
+        { 
+                <p><strong>Notes:</strong> @_editedDescription</p>
+                <textarea class="form-control mb-2" @bind="_editedDescription"></textarea>
+                <div class="d-flex justify-content-end gap-2">
+                    <button class="btn btn-sm btn-secondary" @onclick="CancelEdit">Cancel</button>
+                    <button class="btn btn-sm btn-primary" @onclick="SaveEdit">Save</button>
+                </div>
+        }
+        else
         {
-            <h5>Treatment Plans</h5>
-            <ul>
-                @foreach (var plan in Injury.TreatmentPlans)
-                {
-                    <div class="form-control">
-                        <FitTheraPortal.Client.Components.InjuryTreatmentPlan.TreatmentPlanCard Plan="plan"></FitTheraPortal.Client.Components.InjuryTreatmentPlan.TreatmentPlanCard>
-                        <button class="btn btn-primary" @onclick="() => NavigateToPlanDetails(plan.Id)">Edit</button>
-                    </div>
-                }
-            </ul>
+            <p><strong>Notes:</strong> @_editedDescription</p>
+            <button class="btn btn-sm mb-3" style="width: 33%; color: #67baf3; border: 1px solid #67baf3;" @onclick="() => IsEditing = true">
+                Add Notes
+            </button>
+
+        }
+
+        @if (Injury.TreatmentPlans?.Any() == true)
+        {
+            var chartPlan = Injury.TreatmentPlans.First(); 
+
+            <h5>Treatment Results</h5>
+            <div class="form-control mb-3">
+                <FitTheraPortal.Client.Components.InjuryTreatmentPlan.TreatmentPlanCard Plan="chartPlan" />
+            </div>
+
+            <button class="btn btn-primary" style="width: 20%"
+                    @onclick="() => NavigateToPlanDetails(chartPlan.Id)">
+                View Details
+            </button>
         }
         else
         {
             <p>No treatment plans available.</p>
         }
+
+
     </div>
 }
 
 @code {
-    [Parameter]
-    public InjuryDto? Injury { get; set; }
+    [Parameter] public InjuryDto? Injury { get; set; }
+    [Parameter] public EventCallback<string> OnDescriptionUpdated { get; set; }
+
+    private bool IsEditing = false;
+    private string _editedDescription = string.Empty;
+
+    protected override void OnParametersSet()
+    {
+        if (Injury != null)
+            _editedDescription = Injury.Description;
+    }
+
+    private async Task SaveEdit()
+    {
+        IsEditing = false;
+        if (OnDescriptionUpdated.HasDelegate)
+        {
+            await OnDescriptionUpdated.InvokeAsync(_editedDescription);
+        }
+    }
+
+    private void CancelEdit()
+    {
+        _editedDescription = Injury?.Description ?? string.Empty;
+        IsEditing = false;
+    }
 
     private void NavigateToPlanDetails(Guid id)
     {
         Navigation.NavigateTo($"TreatmentPlanDetails/{id}");
     }
-}
+}  

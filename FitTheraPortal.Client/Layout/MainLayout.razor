@@ -1,4 +1,5 @@
 ﻿@inherits LayoutComponentBase
+
 <div class="page">
     <div class="sidebar">
         <NavMenu/>
@@ -13,9 +14,26 @@
             @Body
         </article>
     </main>
-
-    <MudThemeProvider />
-    <MudPopoverProvider />
-    <MudDialogProvider />
-    <MudSnackbarProvider />
+    
+    <MudThemeProvider Theme="_theme"/>
+    <MudPopoverProvider/>
+    <MudDialogProvider/>
+    <MudSnackbarProvider/>
 </div>
+
+@code {
+    private readonly MudTheme _theme = new()
+    {
+        PaletteLight = new PaletteLight
+        {
+            Primary = "#67baf3",      // Brand Blue
+            Secondary = "#edaf45",    // Gold Accent
+            AppbarBackground = "#67baf3",
+            AppbarText = "#ffffff",
+            DrawerBackground = "#f8f9fa",
+            TextPrimary = "#2a2a2a"
+        }
+    };
+}
+
+

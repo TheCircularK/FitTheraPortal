@@ -1,27 +1,34 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">FitTheraPortal.Client</a>
+﻿<!-- Top logo bar -->
+<div class="logo-bar">
+    <img src="images/logo.png" alt="FitThera Logo" class="logo-img" />
+</div>
+
+<!-- Navbar -->
+<div class="top-row navbar navbar-dark">
+    <div class="container-fluid d-flex justify-content-center align-items-center">
+        <a class="navbar-brand me-2" href="">FitThera Portal</a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
             <span class="navbar-toggler-icon"></span>
         </button>
     </div>
 </div>
 
+<!-- Sidebar Nav -->
 <div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
     <nav class="nav flex-column">
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
+                <span class="bi bi-home-nav-menu" aria-hidden="true"></span> Home
             </NavLink>
         </div>
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="patients">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Patients
+                <span class="bi bi-patients-nav-menu" aria-hidden="true"></span> Patients
             </NavLink>
         </div>
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="appointments">
-                <span class="bi bi-calendar-date-fill" aria-hidden="true"></span> Appointments
+                <span class="bi bi-appointments-nav-menu" aria-hidden="true"></span> Appointments
             </NavLink>
         </div>
     </nav>
@@ -36,14 +43,4 @@
     {
         collapseNavMenu = !collapseNavMenu;
     }
-
 }
-
-@* <MudNavMenu> *@
-@*     <MudNavLink Href="/" Match="NavLinkMatch.All">Dashboard</MudNavLink> *@
-@*     <MudNavLink Href="/patients" Match="NavLinkMatch.Prefix">Patients</MudNavLink> *@
-@*     <MudNavGroup Title="Settings" Expanded="true"> *@
-@*         <MudNavLink Href="/users"  Match="NavLinkMatch.Prefix">Users</MudNavLink> *@
-@*         <MudNavLink Href="/security"  Match="NavLinkMatch.Prefix">Security</MudNavLink> *@
-@*     </MudNavGroup> *@
-@* </MudNavMenu> *@

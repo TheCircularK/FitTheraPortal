@@ -7,14 +7,10 @@
 else
 {
     <div style="display: flex; gap: 20px; align-items: flex-start;">
-        <RadarChart @ref="radarChart" Width="600"></RadarChart>
+        <RadarChart @ref="radarChart" Width="500"></RadarChart>
 
         <ul style="list-style: none; padding: 0; margin: 0;">
-            <li>
-                <p><strong>Start Date:</strong> @Plan.DateStart.ToShortDateString()</p>
-                <p><strong>End Date:</strong> @Plan.DateEnd.ToShortDateString()</p>
-                <p><strong>Overall Confidence Score:</strong> @Plan.OverallConfidenceScore</p>
-            </li>
+
         </ul>
     </div>
 }

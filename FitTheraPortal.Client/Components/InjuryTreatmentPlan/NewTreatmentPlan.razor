@@ -7,28 +7,53 @@
 @inject IDialogService DialogService
 @inject IInjuryTreatmentPlanDataService PlanService
 
-<label>Start Date</label>
-<br />
-<input type="date" @bind-value="_treatmentPlan.StartDate" />
+<div class="container p-4">
+    <h4 class="text-center mb-4" style="color: #67baf3;">New Treatment Plan</h4>
 
-<label>End Date</label>
-<br />
-<input type="date" @bind-value="_treatmentPlan.EndDate" />
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <label for="startDate" class="form-label">Start Date</label>
+            <input type="date" id="startDate" class="form-control" @bind="_treatmentPlan.StartDate" />
+        </div>
+        <div class="col-md-6">
+            <label for="endDate" class="form-label">End Date</label>
+            <input type="date" id="endDate" class="form-control" @bind="_treatmentPlan.EndDate" />
+        </div>
+    </div>
 
-<b>Self Treatments</b>
-@foreach (var treatment in _treatmentPlan.SelfTreatments)
-{
-    <div>@treatment.Title</div>
-}
+    <hr class="my-4" />
 
-<button class="btn btn-secondary" @onclick="ShowNewTreatmentDialog">Add Self Treatment</button>
+    <h5 class="mb-4" style="color: #67baf3;">Self Treatments</h5>
 
-<MudButton Color="Color.Primary" OnClick="SaveTreatmentPlan">Save</MudButton>
+    @if (_treatmentPlan.SelfTreatments.Any())
+    {
+        <ul class="list-group mb-3">
+            @foreach (var treatment in _treatmentPlan.SelfTreatments)
+            {
+                <li class="list-group-item">
+                    @treatment.Title
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p class="text-muted">No self treatments added yet.</p>
+    }
+
+    <button class="btn btn-warning w-100 mb-4" @onclick="ShowNewTreatmentDialog">
+        ➕ Add Self Treatment
+    </button>
+
+    <div class="d-flex justify-content-end">
+        <button class="btn btn-primary" @onclick="SaveTreatmentPlan">Save</button>
+    </div>
+</div>
 
 @code {
     [Parameter]
     public Guid InjuryId { get; set; }
-    
+
     [CascadingParameter]
     private IMudDialogInstance MudDialog { get; set; }
 
@@ -38,9 +63,11 @@
 
     protected override void OnInitialized()
     {
-        _treatmentPlan = new NewTreatmentPlanDto();
-        _treatmentPlan.InjuryId = this.InjuryId;
-        _treatmentPlan.TherapistId = this.TherapistId;
+        _treatmentPlan = new NewTreatmentPlanDto
+        {
+            InjuryId = this.InjuryId,
+            TherapistId = this.TherapistId
+        };
     }
 
     private async Task ShowNewTreatmentDialog()

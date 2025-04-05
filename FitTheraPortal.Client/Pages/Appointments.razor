@@ -3,51 +3,73 @@
 @using BlazorCalendar.Models
 @using FitTheraPortal.Client.DataServices.Interfaces
 
-<h3>Appointments</h3>
-
 @inject IAppointmentDataService AppointmentService
 
-<!--Calendar-->
+<PageTitle>Appointments</PageTitle>
+
 <link href="_content/BlazorCalendar/BlazorCalendar.css" rel="stylesheet" />
 
-<select @bind="@calendarView">
-    <option value="@DisplayedView.Annual">Annual view</option>
-    <option value="@DisplayedView.Monthly" selected>Monthly view</option>
-    <option value="@DisplayedView.Weekly">Weekly view</option>
-</select>
+<style>
+    .appointments-header {
+        color: #67baf3;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
 
-<CalendarContainer DisplayedView="@calendarView" TasksList="_tasks.ToArray()">
-    <AnnualView></AnnualView>
-    <MonthlyView></MonthlyView>
-    <WeekView></WeekView>
-</CalendarContainer>
+    .view-selector {
+        max-width: 200px;
+        margin-bottom: 1.5rem;
+    }
+    
+    .container, .row, .col-12, .col-lg-10 {
+        overflow: visible !important;
+    }
+
+
+</style>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12 col-lg-10">
+
+
+        <h3 class="appointments-header text-center">My Appointments</h3>
+
+            <div class="form-group view-selector">
+                <label for="calendarView" class="form-label">Select View</label>
+                <select id="calendarView" class="form-select" @bind="calendarView">
+                    <option value="@DisplayedView.Annual">Annual view</option>
+                    <option value="@DisplayedView.Monthly">Monthly view</option>
+                    <option value="@DisplayedView.Weekly">Weekly view</option>
+                </select>
+            </div>
+
+            <div>
+                <CalendarContainer DisplayedView="@calendarView" TasksList="_tasks.ToArray()">
+                    <AnnualView></AnnualView>
+                    <MonthlyView></MonthlyView>
+                    <WeekView></WeekView>
+                </CalendarContainer>
+            </div>
+
+        </div>
+    </div>
+</div>
 
 @code {
-    private List<Tasks> _tasks = new List<Tasks>();
-
+    private List<Tasks> _tasks = new();
     private DisplayedView calendarView = DisplayedView.Monthly;
 
     protected override async Task OnInitializedAsync()
     {
-        await base.OnInitializedAsync();
-
         await GetTasks();
     }
 
     private async Task GetTasks()
     {
         var response = await AppointmentService.GetEventsByMonthAsync(DateTime.Now);
-
         _tasks = response.ToList();
 
         Console.WriteLine($"Retrieved {_tasks.Count} tasks.");
-        
-        foreach (var item in _tasks)
-        {
-            Console.WriteLine("Here's the tasks.");
-            Console.WriteLine(item.ID);
-            Console.WriteLine(item.Caption);
-            Console.WriteLine(item.Code);
-        }
     }
 }

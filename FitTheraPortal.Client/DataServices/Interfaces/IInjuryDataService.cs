@@ -1,6 +1,8 @@
 using FitTheraPortal.Client.Dtos;
 
+
 namespace FitTheraPortal.Client.DataServices.Interfaces;
+
 
 public interface IInjuryDataService
 {

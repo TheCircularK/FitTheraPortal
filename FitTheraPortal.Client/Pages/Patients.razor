@@ -1,4 +1,5 @@
 @page "/Patients"
+@using System.Globalization
 @using FitTheraPortal.Client.DataServices.Interfaces
 @using FitTheraPortal.Client.Dtos
 
@@ -9,31 +10,58 @@
 
 <h3>Patients</h3>
 
+<div class="row mb-3">
+    <div class="col-md-4">
+        <input class="form-control"
+               placeholder="Search patients..."
+               @bind="searchTerm"
+               @bind:event="oninput" />
+    </div>
+</div>
+
 @if (_patients == null)
 {
     <div>Loading...</div>
 }
 else
 {
-    foreach (var patient in _patients)
+    var hasResults = FilteredPatients.Any();
+
+    if (hasResults)
     {
-        <div class="form-control" @onclick="() => GoToPatientDetails(patient.Id)">@patient.Profile?.FirstName @patient.Profile?.LastName</div>
+        foreach (var patient in FilteredPatients)
+        {
+            <div class="form-control mb-2 p-3" @onclick="() => GoToPatientDetails(patient.Id)" style= "cursor: pointer;">
+                <div class="fw-bold" >@patient.Profile?.FirstName @patient.Profile?.LastName</div>
+                <div class="text-muted">DOB: @patient.Profile?.Birthdate.ToString("M/d/yyyy", CultureInfo.InvariantCulture)</div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="text-muted">No patients match your search.</div>
     }
 }
 
 @code {
     private IEnumerable<PatientDto>? _patients = null!;
+    private string searchTerm = string.Empty;
+
+    private IEnumerable<PatientDto> FilteredPatients =>
+        string.IsNullOrWhiteSpace(searchTerm)
+            ? _patients ?? Enumerable.Empty<PatientDto>()
+            : _patients?.Where(p =>
+                ($"{p.Profile?.FirstName} {p.Profile?.LastName}")
+                .Contains(searchTerm, StringComparison.OrdinalIgnoreCase)) ?? Enumerable.Empty<PatientDto>();
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-
         await GetPatients();
     }
 
     private async Task GetPatients()
     {
-        
         _patients = await PatientService.GetAllPatientsAsync();
     }
 
@@ -42,3 +70,4 @@ else
         Navigation.NavigateTo($"/patient/{id}");
     }
 }
+

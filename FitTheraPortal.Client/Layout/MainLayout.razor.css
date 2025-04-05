@@ -9,7 +9,12 @@ main {
 }
 
 .sidebar {
-    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
+    background-image: linear-gradient(
+            180deg,
+            var(--sidebar-top) 0%,
+            var(--sidebar-top) 70%,
+            var(--sidebar-bottom) 100%
+    );
 }
 
 .top-row {
@@ -75,3 +80,25 @@ main {
         padding-right: 1.5rem !important;
     }
 }
+.custom-login-button {
+    background-color: #67baf3;
+    color: white;
+    border: none;
+}
+
+.custom-login-button:hover {
+    background-color: #56a5db;
+    color: white;
+}
+
+.custom-logout-button {
+    background-color: transparent;
+    color: #67baf3;
+    border: 1px solid #67baf3;
+}
+
+.custom-logout-button:hover {
+    background-color: #67baf3;
+    color: white;
+}
+

@@ -14,45 +14,92 @@
         scroll-snap-type: x mandatory;
         white-space: nowrap;
     }
+
+    .exercise-card {
+        min-width: 200px;
+        max-width: 220px;
+        scroll-snap-align: start;
+        word-wrap: break-word;
+        white-space: normal;
+    }
+
+    .exercise-title {
+        font-size: 0.95rem;
+        font-weight: 500;
+        margin-bottom: 8px;
+        text-align: center;
+        word-break: break-word;
+    }
 </style>
 
-<div class="input-group">
-    <label>Duration</label>
-    <input type="number" @bind-value="_newExercise.ExerciseDuration" class="form-control"/>
-    <br />
+<div class="container p-4">
+    <h4 class="text-center mb-4" style="color: #67baf3;">Add Exercise to Self Treatment Plan</h4>
 
-    <label>Rest Length</label>
-    <input type="number" @bind-value="_newExercise.RestAfterSeconds" class="form-control"/>
-    <br />
+    <div class="row g-3 mb-4">
+        <div class="col-sm-6">
+            <label class="form-label">Duration (seconds)</label>
+            <input type="number" class="form-control" @bind="_newExercise.ExerciseDuration" />
+        </div>
+        <div class="col-sm-6">
+            <label class="form-label">Rest Length (seconds)</label>
+            <input type="number" class="form-control" @bind="_newExercise.RestAfterSeconds" />
+        </div>
+        <div class="col-sm-6">
+            <label class="form-label">Weight (lbs)</label>
+            <input type="number" class="form-control" @bind="_newExercise.WeightLbs" />
+        </div>
+        <div class="col-sm-6">
+            <label class="form-label">Reps</label>
+            <input type="number" class="form-control" @bind="_newExercise.Reps" />
+        </div>
+    </div>
 
-    <label>Weight</label>
-    <input type="number" @bind-value="_newExercise.WeightLbs" class="form-control"/>
-    <br />
+    <hr class="mb-4" />
 
-    <label>Reps</label>
-    <input type="number" @bind-value="_newExercise.Reps" class="form-control"/>
-    <br />
+    <h6 class="mb-2" style="color: #67baf3;">Available Exercises</h6>
+
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <input type="text" id="search" class="form-control" placeholder="Type to search..."
+                   @bind="_searchTerm" @bind:event="oninput" />
+        </div>
+    </div>
+
+    <div class="exercise-container mb-4">
+        @foreach (var exercise in FilteredExercises)
+        {
+            <div class="card exercise-card shadow-sm">
+                <div class="card-body text-center p-2">
+                    <div class="fw-semibold small mb-2" style="min-height: 2.5rem;">@exercise.Name</div>
+                    <ExerciseCard Exercise="exercise" />
+                    <button class="btn btn-primary btn-sm w-100 mt-2"
+                            @onclick="() => SelectExercise(exercise)">
+                        Select
+                    </button>
+                </div>
+            </div>
+        }
+    </div>
+
+
+    <div class="d-flex justify-content-end">
+        <button class="btn btn-primary" @onclick="SelectAndReturn">Add to Plan</button>
+    </div>
 </div>
-
-<div class="exercise-container">
-    @foreach (var exercise in _exercises)
-    {
-        <ExerciseCard Exercise="exercise"></ExerciseCard>
-        <button @onclick="() => SelectExercise(exercise)">Select</button>
-    }
-</div>
-
-<MudButton OnClick="SelectAndReturn">Save</MudButton>
 
 @code {
     [CascadingParameter]
     private IMudDialogInstance MudDialog { get; set; }
 
-    private void Cancel() => MudDialog.Cancel();
-
     private IEnumerable<ExerciseDto> _exercises = new List<ExerciseDto>();
+    private string _searchTerm = string.Empty;
 
-    private NewTreatmentExerciseDto _newExercise = new NewTreatmentExerciseDto()
+    private IEnumerable<ExerciseDto> FilteredExercises =>
+        string.IsNullOrWhiteSpace(_searchTerm)
+            ? _exercises
+            : _exercises.Where(e => e.Name.Contains(_searchTerm, StringComparison.OrdinalIgnoreCase));
+
+    private NewTreatmentExerciseDto _newExercise = new()
     {
         ExerciseDuration = 30,
         Reps = 5,
@@ -74,7 +121,6 @@
     {
         _newExercise.ExerciseId = exercise.Id;
         _newExercise.Title = exercise.Name;
-        
         Console.WriteLine($"Selected exercise: {exercise.Name}");
     }
 

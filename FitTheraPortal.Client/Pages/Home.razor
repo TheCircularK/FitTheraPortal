@@ -1,7 +1,82 @@
 ﻿@page "/"
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IAppointmentDataService AppointmentService
+@using BlazorCalendar.Models
+@using FitTheraPortal.Client.DataServices.Interfaces
 
 <PageTitle>Home</PageTitle>
 
-<h1>FitThera</h1>
+<div class="container mt-5" style="color: black;">
+    @if (_isAuthenticated)
+    {
+        <h1 class="mb-3">Welcome back, @_providerName!</h1>
+        <br/>
+        
+        <p class="lead mb-4">Here are your announcements for today:</p>
+        <p class="text-muted">You're all caught up!</p>
+        <br/>
+        <br/>
+        <p class="lead mb-4">Here are your appointments for today:</p>
 
-This is an amazing landing page. Please clap.
+        @if (_todaysAppointments.Any())
+        {
+            <ul class="list-group mb-4">
+                @foreach (var appt in _todaysAppointments)
+                {
+                    <li class="list-group-item">
+                        <strong>@appt.Caption</strong> — @appt.Code<br />
+                        <small class="text-muted">@appt.DateStart.ToString("h:mm tt")</small>
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            <p class="text-muted">No appointments scheduled for today.</p>
+        }
+    }
+    else
+    {
+        <div class="d-flex flex-column align-items-center text-center mt-5">
+            <h1 class="mb-3">Welcome to FitThera 👋</h1>
+            <br/>
+
+            <!-- Logo centered under welcome -->
+            <img src="images/logo.png" alt="FitThera Logo" class="my-4" style="max-height: 150px;" />
+            <br/>
+            <br/>
+    
+            <a class="btn btn-primary btn-lg" href="authentication/login">Login to Get Started</a>
+        </div>
+
+    }
+</div>
+
+@code {
+    private bool _isAuthenticated;
+    private string? _providerName;
+    private List<Tasks> _todaysAppointments = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        _isAuthenticated = user.Identity is not null && user.Identity.IsAuthenticated;
+
+        if (_isAuthenticated)
+        {
+            _providerName = user.Identity?.Name ?? "Provider";
+            await LoadTodaysAppointments();
+        }
+    }
+
+    private async Task LoadTodaysAppointments()
+    {
+        var allAppointments = await AppointmentService.GetEventsByMonthAsync(DateTime.Now);
+
+        _todaysAppointments = allAppointments
+            .Where(a => a.DateStart.Date == DateTime.Today)
+            .ToList();
+    }
+}
