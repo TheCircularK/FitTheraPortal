@@ -1,0 +1,47 @@
+@using FitTheraPortal.Client.DataServices.Interfaces
+@using FitTheraPortal.Client.Dtos
+
+@inject IInjuryDataService InjuryService
+
+<div class="form-group">
+    <label>Injury Title:</label>
+    <br />
+    <input type="text" class="form-control" @bind-value="_injury.Title"/>
+    <br />
+    <label>Injury Description:</label>
+    <br />
+    <textarea class="form-control" @bind="_injuryDescription"></textarea>
+    <br />
+    
+    <MudDatePicker Label="Injury Date" @bind-Value="_injury.InjuryDate"/>
+</div>
+
+<MudButton Color="Color.Primary" OnClick="SaveInjury">Save</MudButton>
+<MudButton Color="Color.Warning" OnClick="Cancel">Cancel</MudButton>
+
+@code {
+    [Parameter]
+    public Guid PatientId { get; set; }
+    
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; }
+
+    private InjuryDto _injury = new();
+
+    private string _injuryDescription = "";
+
+    private async Task SaveInjury()
+    {
+        _injury.Description = _injuryDescription;
+        _injury.PatientId = PatientId;
+        
+        await InjuryService.CreateAsync(_injury);
+
+        MudDialog.Close();
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+}

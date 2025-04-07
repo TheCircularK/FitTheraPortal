@@ -14,6 +14,7 @@ public class MapperProfile : Profile
         CreateMap<ExerciseHealthData, ExerciseHealthDataDto>();
         CreateMap<Exercise, ExerciseDto>();
         CreateMap<Injury, InjuryDto>();
+        CreateMap<InjuryDto, Injury>();
         CreateMap<InjuryTreatmentPlan, InjuryTreatmentPlanDto>();
         CreateMap<Patient, PatientDto>();
         CreateMap<Models.Profile, ProfileDto>();

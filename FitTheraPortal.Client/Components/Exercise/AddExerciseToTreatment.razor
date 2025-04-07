@@ -30,6 +30,10 @@
         text-align: center;
         word-break: break-word;
     }
+    
+    .is-selected {
+        outline: 1px solid red;
+    }
 </style>
 
 <div class="container p-4">
@@ -68,7 +72,7 @@
     <div class="exercise-container mb-4">
         @foreach (var exercise in FilteredExercises)
         {
-            <div class="card exercise-card shadow-sm">
+            <div class="card exercise-card shadow-sm @( _newExercise.ExerciseId == exercise.Id ? "is-selected" : "")">
                 <div class="card-body text-center p-2">
                     <div class="fw-semibold small mb-2" style="min-height: 2.5rem;">@exercise.Name</div>
                     <ExerciseCard Exercise="exercise" />

@@ -62,6 +62,8 @@
         <MudAlert Severity="Severity.Warning">No profile information available.</MudAlert>
     }
 
+    <MudButton Color="Color.Default" OnClick="ShowNewInjuryDialog">New Injury</MudButton>
+    
     @if (_patientInjuries?.Any() == true)
     {
         <MudText Typo="Typo.h5" Class="mt-6 mb-2">Injuries</MudText>
@@ -124,6 +126,31 @@
         catch (Exception ex)
         {
             Snackbar.Add(ex.Message, Severity.Error);
+        }
+    }
+
+    private async Task ShowNewInjuryDialog()
+    {
+        var parameters = new DialogParameters
+        {
+            { nameof(InjuryDto.PatientId), PatientId }
+        };
+        
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.ExtraExtraLarge,
+            FullWidth = true,
+            CloseButton = true,
+        };
+
+        var dialog = await DialogService.ShowAsync<CreateInjury>("New Injury", parameters, options);
+        var result = await dialog.Result;
+
+        var needToRefresh = !result?.Canceled ?? (result != null);
+        
+        if (needToRefresh)
+        {
+            await GetPatientInjuries();
         }
     }
 

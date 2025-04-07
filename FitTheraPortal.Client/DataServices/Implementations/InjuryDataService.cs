@@ -1,6 +1,7 @@
 using AutoMapper;
 using FitTheraPortal.Client.DataServices.Interfaces;
 using FitTheraPortal.Client.Dtos;
+using FitTheraPortal.Client.Models;
 using FitTheraPortal.Client.Repositories.Interfaces;
 
 namespace FitTheraPortal.Client.DataServices.Implementations;
@@ -47,5 +48,12 @@ public class InjuryDataService : IInjuryDataService
         mapped = mapped.OrderByDescending(i => i.InjuryDate);
         
         return mapped;
+    }
+
+    public Task CreateAsync(InjuryDto injury)
+    {
+        var newInjury = _mapper.Map<Injury>(injury);
+        
+        return _injuryRepository.CreateAsync(newInjury);
     }
 }
