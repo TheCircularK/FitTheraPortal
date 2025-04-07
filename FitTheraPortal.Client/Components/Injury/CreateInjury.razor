@@ -1,28 +1,63 @@
 @using FitTheraPortal.Client.DataServices.Interfaces
 @using FitTheraPortal.Client.Dtos
+@using MudBlazor
 
 @inject IInjuryDataService InjuryService
 
-<div class="form-group">
-    <label>Injury Title:</label>
-    <br />
-    <input type="text" class="form-control" @bind-value="_injuryTitle"/>
-    <br />
-    <label>Injury Description:</label>
-    <br />
-    <textarea class="form-control" @bind="_injuryDescription"></textarea>
-    <br />
-    
-    <MudDatePicker Label="Injury Date" @bind-value="_injuryDate"/>
-</div>
+<style>
+    .injury-form {
+        padding: 24px;
+    }
 
-<MudButton Color="Color.Primary" OnClick="SaveInjury">Save</MudButton>
-<MudButton Color="Color.Warning" OnClick="Cancel">Cancel</MudButton>
+    .injury-form-group {
+        margin-bottom: 20px;
+    }
+
+    .injury-form label {
+        font-weight: 500;
+        margin-bottom: 6px;
+        display: block;
+        color: #333;
+    }
+
+    .injury-form .form-control {
+        width: 100%;
+    }
+
+    .injury-form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        margin-top: 24px;
+    }
+</style>
+
+<div class="injury-form">
+    <div class="injury-form-group">
+        <label>Injury Title:</label>
+        <input type="text" class="form-control" @bind-value="_injuryTitle" />
+    </div>
+
+    <div class="injury-form-group">
+        <label>Injury Description:</label>
+        <textarea class="form-control" @bind="_injuryDescription" rows="3"></textarea>
+    </div>
+
+    <div class="injury-form-group">
+        <label>Injury Date:</label>
+        <MudDatePicker @bind-Date="_injuryDate" Class="w-100" />
+    </div>
+
+    <div class="injury-form-actions">
+        <MudButton Color="Color.Primary" OnClick="SaveInjury">Save</MudButton>
+        <MudButton Color="Color.Warning" OnClick="Cancel">Cancel</MudButton>
+    </div>
+</div>
 
 @code {
     [Parameter]
     public Guid PatientId { get; set; }
-    
+
     [CascadingParameter]
     private IMudDialogInstance MudDialog { get; set; }
 
@@ -30,15 +65,15 @@
 
     private string _injuryTitle = "";
     private string _injuryDescription = "";
-    private DateTime _injuryDate = DateTime.Today;
+    private DateTime? _injuryDate = DateTime.Today;
 
     private async Task SaveInjury()
     {
         _injury.Title = _injuryTitle;
         _injury.Description = _injuryDescription;
-        _injury.InjuryDate = _injuryDate;
+        _injury.InjuryDate = (DateTime)_injuryDate;
         _injury.PatientId = PatientId;
-        
+
         await InjuryService.CreateAsync(_injury);
 
         MudDialog.Close();

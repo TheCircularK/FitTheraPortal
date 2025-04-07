@@ -61,8 +61,14 @@
     {
         <MudAlert Severity="Severity.Warning">No profile information available.</MudAlert>
     }
+    
+    <MudButton Color="Color.Primary"
+               Variant="Variant.Filled"
+               Class="mb-3"
+               OnClick="ShowNewInjuryDialog">
+        New Injury
+    </MudButton>
 
-    <MudButton Color="Color.Default" OnClick="ShowNewInjuryDialog">New Injury</MudButton>
     
     @if (_patientInjuries?.Any() == true)
     {
