@@ -6,14 +6,14 @@
 <div class="form-group">
     <label>Injury Title:</label>
     <br />
-    <input type="text" class="form-control" @bind-value="_injury.Title"/>
+    <input type="text" class="form-control" @bind-value="_injuryTitle"/>
     <br />
     <label>Injury Description:</label>
     <br />
     <textarea class="form-control" @bind="_injuryDescription"></textarea>
     <br />
     
-    <MudDatePicker Label="Injury Date" @bind-Value="_injury.InjuryDate"/>
+    <MudDatePicker Label="Injury Date" @bind-value="_injuryDate"/>
 </div>
 
 <MudButton Color="Color.Primary" OnClick="SaveInjury">Save</MudButton>
@@ -28,11 +28,15 @@
 
     private InjuryDto _injury = new();
 
+    private string _injuryTitle = "";
     private string _injuryDescription = "";
+    private DateTime _injuryDate = DateTime.Today;
 
     private async Task SaveInjury()
     {
+        _injury.Title = _injuryTitle;
         _injury.Description = _injuryDescription;
+        _injury.InjuryDate = _injuryDate;
         _injury.PatientId = PatientId;
         
         await InjuryService.CreateAsync(_injury);

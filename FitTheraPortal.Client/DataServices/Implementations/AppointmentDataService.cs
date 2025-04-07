@@ -133,6 +133,8 @@ public class AppointmentDataService : IAppointmentDataService
                 Code = code,
                 Caption = patient.Profile.FirstName + " " + patient.Profile.LastName,
                 Color = color,
+                Comment = appointmentList[i].Id.ToString(),
+                
             };
             
             taskList.Add(task);

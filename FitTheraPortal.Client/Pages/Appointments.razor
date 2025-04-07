@@ -46,9 +46,9 @@
 
             <div>
                 <CalendarContainer DisplayedView="@calendarView" TasksList="_tasks.ToArray()">
-                    <AnnualView></AnnualView>
-                    <MonthlyView></MonthlyView>
-                    <WeekView></WeekView>
+                    <AnnualView TaskClick="ShowTaskDetails"></AnnualView>
+                    <MonthlyView TaskClick="ShowTaskDetails"></MonthlyView>
+                    <WeekView TaskClick="ShowTaskDetails"></WeekView>
                 </CalendarContainer>
             </div>
 
@@ -71,5 +71,10 @@
         _tasks = response.ToList();
 
         Console.WriteLine($"Retrieved {_tasks.Count} tasks.");
+    }
+
+    private async Task ShowTaskDetails(ClickTaskParameter args)
+    {
+        return;
     }
 }

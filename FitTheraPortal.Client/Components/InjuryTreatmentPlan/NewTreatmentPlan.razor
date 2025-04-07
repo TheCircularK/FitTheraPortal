@@ -41,7 +41,7 @@
         <p class="text-muted">No self treatments added yet.</p>
     }
 
-    <button class="btn btn-warning w-100 mb-4" @onclick="ShowNewTreatmentDialog">
+    <button class="btn btn-warning w-100 mb-4" @onclick="ShowNewSelfTreatmentDialog">
         ➕ Add Self Treatment
     </button>
 
@@ -70,7 +70,7 @@
         };
     }
 
-    private async Task ShowNewTreatmentDialog()
+    private async Task ShowNewSelfTreatmentDialog()
     {
         var options = new DialogOptions
         {

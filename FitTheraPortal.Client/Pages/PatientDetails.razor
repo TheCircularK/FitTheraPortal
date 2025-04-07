@@ -71,14 +71,15 @@
         @foreach (var injury in _patientInjuries)
         {
             <MudPaper Class="mb-4 p-3">
+                <InjuryCard Injury="injury" />
+                
+                <MudDivider Class="my-2" />
+                
                 <MudButton Variant="Variant.Filled" Color="Color.Primary"
                            OnClick="@(() => ShowNewPlanDialog(injury.Id))"
                            StartIcon="@Icons.Material.Filled.Add">
                     New Treatment Plan
                 </MudButton>
-
-                <MudDivider Class="my-2" />
-                <InjuryCard Injury="injury" />
             </MudPaper>
         }
     }

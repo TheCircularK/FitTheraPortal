@@ -1,6 +1,7 @@
 using AutoMapper;
 using FitTheraPortal.Client.DataServices.Interfaces;
 using FitTheraPortal.Client.Dtos;
+using FitTheraPortal.Client.Dtos.CreateItems;
 using FitTheraPortal.Client.Models;
 using FitTheraPortal.Client.Repositories.Interfaces;
 
@@ -47,5 +48,38 @@ public class SelfTreatmentDataService : ISelfTreatmentDataService
         var response = await _selfTreatmentRepository.CreateAsync(selfTreatment);
 
         return response;
+    }
+
+    public async Task AddSelfTreatmentToPlanAsync(NewSelfTreatmentDto selfTreatment, Guid treatmentPlanId)
+    {
+        await Task.Yield();
+        
+        var newSelfTreatmentId = Guid.NewGuid();
+            
+        var newSelfTreatment = new SelfTreatment()
+        {
+            Id = newSelfTreatmentId,
+            Title = selfTreatment.Title,
+            DueDate = selfTreatment.DueDate,
+            TreatmentPlanId = (Guid)treatmentPlanId,
+        };
+            
+        var selfTreatmentId = await CreateAsync(newSelfTreatment);
+
+        // Add exercise objects -- use treatment plan ID
+        foreach (var exercise in selfTreatment.Exercises)
+        {
+            var newExercise = new SelfTreatmentExercise
+            {
+                SelfTreatmentId = (Guid)selfTreatmentId,
+                ExerciseId = (Guid)exercise.ExerciseId,
+                ExerciseDuration = exercise.ExerciseDuration,
+                RestAfterSeconds = exercise.RestAfterSeconds,
+                WeightLbs = exercise.WeightLbs,
+                Reps = exercise.Reps,
+            };
+                
+            await _selfTreatmentExerciseDataService.CreateAsync(newExercise);
+        }
     }
 }

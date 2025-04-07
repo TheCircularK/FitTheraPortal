@@ -2,10 +2,14 @@
 @using FitTheraPortal.Client.DataServices.Interfaces
 @using FitTheraPortal.Client.Dtos
 @using FitTheraPortal.Client.Components.InjuryTreatmentPlan
+@using FitTheraPortal.Client.Components.SelfTreatment
+@using FitTheraPortal.Client.Dtos.CreateItems
+@using MudBlazor.Extensions
 
 @inject IInjuryTreatmentPlanDataService PlanService
-@inject NavigationManager NavManager 
-
+@inject NavigationManager NavManager
+@inject IDialogService DialogService
+@inject ISelfTreatmentDataService SelfTreatmentService
 
 <PageTitle>Treatment Plan</PageTitle>
 
@@ -51,7 +55,12 @@
     }
 </style>
 
-
+@if (_plan is null)
+{
+    <div>Loading...</div>
+}
+else
+{
 <div class="container mt-5">
     <div class="row">
         <div class="col-md-10 offset-md-1">
@@ -60,30 +69,48 @@
 
             @if (_plan is null)
             {
-                <div class="loading-spinner">
-                    <div class="spinner-border" role="status">
-                        <span class="visually-hidden">Loading...</span>
-                    </div>
+            <div class="loading-spinner">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Loading...</span>
                 </div>
+            </div>
             }
             else
             {
-                <div class="treatment-card">
-                    <div class="plan-summary-box">
-                        <p><strong>Start Date:</strong> @_plan.DateStart.ToShortDateString()</p>
-                        <p><strong>End Date:</strong> @_plan.DateEnd.ToShortDateString()</p>
-                        <p><strong>Overall Confidence Score:</strong> @_plan.OverallConfidenceScore</p>
-                    </div>
-
-                    <div class="mt-4">
-                        <FitTheraPortal.Client.Components.InjuryTreatmentPlan.TreatmentPlanCard Plan="_plan"/>
-                    </div>
+            <div class="treatment-card">
+                <div class="plan-summary-box">
+                    <p><strong>Start Date:</strong> @_plan.DateStart.ToShortDateString()</p>
+                    <p><strong>End Date:</strong> @_plan.DateEnd.ToShortDateString()</p>
+                    <p><strong>Overall Confidence Score:</strong> @_plan.OverallConfidenceScore</p>
                 </div>
-            }
 
+                <div class="mt-4">
+                    <FitTheraPortal.Client.Components.InjuryTreatmentPlan.TreatmentPlanCard Plan="_plan"/>
+                </div>
+            </div>
+            }
         </div>
     </div>
+
+    <MudButton Color="Color.Primary" OnClick="ShowNewSelfTreatmentDialog">Add Self Treatment</MudButton>
+
+    @if (_plan.SelfTreatment.Any())
+    {
+    <ul class="list-group mb-3">
+        @foreach (var treatment in _plan.SelfTreatment)
+        {
+            <li class="list-group-item">
+                @treatment.Title
+            </li>
+        }
+    </ul>
+    }
+    else
+    {
+    <p class="text-muted">No self treatments added yet.</p>
+    }
 </div>
+}
 
 @code {
     [Parameter]
@@ -99,5 +126,27 @@
     private async Task GetInjuryTreatmentPlan()
     {
         _plan = await PlanService.GetAsync(PlanId);
+    }
+    
+    private async Task ShowNewSelfTreatmentDialog()
+    {
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.ExtraLarge,
+            FullWidth = true,
+            CloseButton = true,
+        };
+
+        var dialog = await DialogService.ShowAsync<NewSelfTreatment>("New Self Treatment", options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            var data = result.Data.As<NewSelfTreatmentDto>();
+            // Save and refresh data
+            await SelfTreatmentService.AddSelfTreatmentToPlanAsync(data, PlanId);
+
+            await GetInjuryTreatmentPlan();
+        }
     }
 }
